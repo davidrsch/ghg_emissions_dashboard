@@ -1,11 +1,13 @@
 box::use(
   shiny.fluent[fluentPage, Pivot, PivotItem],
-  shiny[div, moduleServer, NS, renderUI, tags],
+  shiny[div, moduleServer, NS],
   shinyjs[useShinyjs],
 )
 
 box::use(
-  app/view[...],
+  app/view/inputs,
+  app/view/key_metrics,
+  app/view/sidebar,
 )
 
 #' @export
@@ -24,9 +26,11 @@ ui <- function(id) {
           id = ns("sidebar_A"),
           name = "a_sidebar",
           title = "Inputs",
-          sidebar_content = "Hello sidebar",
+          sidebar_content = inputs$ui(ns("inputs")),
           sidebar_bgc = "#ffff",
-          main_content = "Hello main",
+          main_content = div(
+            key_metrics$ui(ns("keymetrics"))
+          ),
           main_bgc = "#DADAD9"
         )
       )
@@ -40,6 +44,7 @@ server <- function(id) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
     sidebar$server("sidebar_A")
-
+    inputs_to <- inputs$server("inputs")
+    key_metrics$server("keymetrics", inputs_to)
   })
 }
