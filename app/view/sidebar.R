@@ -13,7 +13,7 @@ ui <- function(id, name, title, sidebar_content, sidebar_bgc, main_content, main
     div(
       id = ns("sidebar"),
       class = "ms-Grid-col ms-sm12 ms-xl2",
-      style = paste0("background-color:", sidebar_bgc),
+      style = paste0("background-color:", sidebar_bgc, "; padding: 10px;"),
       div(
         style = "display:flex",
         Text(title, variant = "large"),

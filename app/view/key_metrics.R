@@ -14,7 +14,15 @@ ui <- function(id) {
   ns <- NS(id)
   Stack(
     horizontal = TRUE,
-    tokens = list(padding = "15px", childrenGap = "10px"),
+    tokens = list(childrenGap = "10px"),
+    styles = list(
+      root = list(
+        "padding-top" = "10px",
+        "padding-left" = "2px",
+        "padding-right" = "2px",
+        "padding-bottom" = "10px"
+      )
+    ),
     div(
       Text("Total GHG Emissions:"),
       uiOutput(ns("tghge")),
