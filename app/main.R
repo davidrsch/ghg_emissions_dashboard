@@ -8,6 +8,7 @@ box::use(
   app/view/inputs,
   app/view/key_metrics,
   app/view/sidebar,
+  app/view/top_regions,
 )
 
 #' @export
@@ -29,7 +30,8 @@ ui <- function(id) {
           sidebar_content = inputs$ui(ns("inputs")),
           sidebar_bgc = "#ffff",
           main_content = div(
-            key_metrics$ui(ns("keymetrics"))
+            key_metrics$ui(ns("keymetrics")),
+            top_regions$ui(ns("regions_tp"))
           ),
           main_bgc = "#DADAD9"
         )
@@ -46,5 +48,6 @@ server <- function(id) {
     sidebar$server("sidebar_A")
     inputs_to <- inputs$server("inputs")
     key_metrics$server("keymetrics", inputs_to)
+    top_regions$server("regions_tp", inputs_to)
   })
 }

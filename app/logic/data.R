@@ -57,3 +57,15 @@ ghg_gdplulucf_years <- ghg_per_gdp_by_country |>
 edgar_cc <- ghg_totals_by_country |>
   select(edgar_country_code) |>
   pull()
+
+#' @export
+sectors <- ghg_by_sector_and_country |>
+  select(sector) |>
+  unique() |>
+  pull()
+
+#' @export
+substances <- ghg_by_sector_and_country |>
+  select(substance) |>
+  unique() |>
+  pull()

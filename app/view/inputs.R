@@ -1,11 +1,11 @@
 box::use(
   dplyr[last],
-  shiny.fluent[ComboBox.shinyInput],
-  shiny[div, moduleServer, NS],
+  shiny.fluent[ComboBox.shinyInput, Dropdown.shinyInput, updateDropdown.shinyInput],
+  shiny[div, getDefaultReactiveDomain, moduleServer, NS, observeEvent],
 )
 
 box::use(
-  app/logic/data[edgar_cc, ghg_tspc_years],
+  app/logic/data[edgar_cc, ghg_tspc_years, sectors, substances],
   app/logic/get_options[get_options],
 )
 
@@ -63,6 +63,59 @@ ui <- function(id) {
           )
         )
       )
+    ),
+    Dropdown.shinyInput(
+      ns("arrange_regions"),
+      label = "Regions by:",
+      value = "Total emissions",
+      options = get_options(
+        c("Total emissions", "Per capita", "GDP", "Sector", "Substance", "Sector & Substance")
+      ),
+      calloutProps = list(
+        styles = list(
+          root = list(
+            "max-height" = "300px!important"
+          )
+        )
+      )
+    ),
+    Dropdown.shinyInput(
+      ns("arrange_regions_sectors"),
+      label = "Sector:",
+      value = "Power Industry",
+      options = get_options(sectors),
+      styles = list(
+        root = list(
+          "visibility" = "hidden",
+          "display" = "none"
+        )
+      ),
+      calloutProps = list(
+        styles = list(
+          root = list(
+            "max-height" = "300px!important"
+          )
+        )
+      )
+    ),
+    Dropdown.shinyInput(
+      ns("arrange_regions_substance"),
+      label = "Substance:",
+      value = "CO2",
+      options = get_options(substances),
+      styles = list(
+        root = list(
+          "visibility" = "hidden",
+          "display" = "none"
+        )
+      ),
+      calloutProps = list(
+        styles = list(
+          root = list(
+            "max-height" = "300px!important"
+          )
+        )
+      )
     )
   )
 }
@@ -70,6 +123,85 @@ ui <- function(id) {
 #' @export
 server <- function(id) {
   moduleServer(id, function(input, output, session) {
+    observeEvent(input$arrange_regions, {
+      if (is.element(input$arrange_regions, c("Sector", "Sector & Substance"))) {
+        updateDropdown.shinyInput(
+          session = getDefaultReactiveDomain(),
+          "arrange_regions_sectors",
+          styles = list(
+            root = list(
+              "visibility" = "show",
+              "display" = "block"
+            )
+          ),
+          calloutProps = list(
+            styles = list(
+              root = list(
+                "max-height" = "300px!important"
+              )
+            )
+          )
+        )
+      } else {
+        updateDropdown.shinyInput(
+          session = getDefaultReactiveDomain(),
+          "arrange_regions_sectors",
+          styles = list(
+            root = list(
+              "visibility" = "hidden",
+              "display" = "none"
+            )
+          ),
+          calloutProps = list(
+            styles = list(
+              root = list(
+                "max-height" = "300px!important"
+              )
+            )
+          )
+        )
+      }
+
+      if (is.element(input$arrange_regions, c("Substance", "Sector & Substance"))) {
+        updateDropdown.shinyInput(
+          session = getDefaultReactiveDomain(),
+          "arrange_regions_substance",
+          styles = list(
+            root = list(
+              "visibility" = "show",
+              "display" = "block"
+            )
+          ),
+          calloutProps = list(
+            styles = list(
+              root = list(
+                "max-height" = "300px!important"
+              )
+            )
+          )
+        )
+      } else {
+        updateDropdown.shinyInput(
+          session = getDefaultReactiveDomain(),
+          "arrange_regions_substance",
+          styles = list(
+            root = list(
+              "visibility" = "hidden",
+              "display" = "none"
+            )
+          ),
+          calloutProps = list(
+            styles = list(
+              root = list(
+                "max-height" = "300px!important"
+              )
+            )
+          )
+        )
+      }
+
+    })
+
     return(input)
   })
 }

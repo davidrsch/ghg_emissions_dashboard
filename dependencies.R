@@ -1,4 +1,5 @@
 # This file allows packrat (used by rsconnect during deployment) to pick up dependencies.
+library(DT)
 library(janitor)
 library(readxl)
 library(rhino)
