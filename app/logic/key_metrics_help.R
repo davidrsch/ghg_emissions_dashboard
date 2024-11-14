@@ -58,16 +58,16 @@ get_change_format <- function(change) {
   if (change == "") {
     ""
   } else {
-    paste0(round(change, 2), "%")
+    paste0(format(round(change, 2), nsmall = 2), "%")
   }
 }
 
 #' @export
 get_value_format <- function(value) {
   if (value < 1000) {
-    paste0(round(value, digits = 2))
+    paste0(format(round(value, digits = 2), nsmall = 2))
   } else {
-    paste0(round(value / 1000, digits = 2), "k")
+    paste0(format(round(value / 1000, digits = 2), nsmall = 2), "k")
   }
 }
 
@@ -81,7 +81,7 @@ get_primary_ui <- function(data, actual_year, country_code, years, unit) {
     exist_prev_year <- is.element(prev_year, years)
     actual_value <- get_value_of_country_in_year(data, country_code, actual_year)
 
-    if (exist_prev_year & !is.na(actual_value)) {
+    if (exist_prev_year && !is.na(actual_value)) {
       prev_value <- get_value_of_country_in_year(data, country_code, prev_year)
       change <- actual_value / prev_value - 1
     } else {
@@ -96,7 +96,7 @@ get_primary_ui <- function(data, actual_year, country_code, years, unit) {
     } else {
       actual_value <- "No data"
     }
-    
+
   } else {
     actual_value <- "No data"
     change <- ""
@@ -148,7 +148,7 @@ get_secondary_ui <- function(data, actual_year, country_code, years, unit) {
     exist_prev_year <- is.element(prev_year, years)
     actual_value <- get_value_of_country_in_year(data, country_code, actual_year)
 
-    if (exist_prev_year & !is.na(actual_value)) {
+    if (exist_prev_year && !is.na(actual_value)) {
       prev_value <- get_value_of_country_in_year(data, country_code, prev_year)
       change <- actual_value / prev_value - 1
     } else {
@@ -163,7 +163,7 @@ get_secondary_ui <- function(data, actual_year, country_code, years, unit) {
     } else {
       actual_value <- "No data"
     }
-    
+
   } else {
     actual_value <- "No data"
     change <- ""
