@@ -4,7 +4,8 @@ box::use(
 )
 
 box::use(
-  app/logic/data[ghg_per_capita_by_country, ghg_totals_by_country, ghg_totals_years],
+  app/logic/data[ghg_gdplulucf_years, ghg_per_capita_by_country, ghg_per_gdp_by_country],
+  app/logic/data[ghg_totals_by_country, ghg_tspc_years],
   app/logic/key_metrics_help[get_primary_ui, get_secondary_ui],
 )
 
@@ -27,7 +28,8 @@ ui <- function(id) {
       style = "background-color: #ffff; text-align: right;"
     ),
     div(
-      Text("Emissions per GDP:"),
+      Text("Emissions per GDP (kUSD):"),
+      uiOutput(ns("gdpghge")),
       class = "card ms-depth-8 ms-sm4",
       style = "background-color: #ffff; text-align: right;"
     )
@@ -44,14 +46,14 @@ server <- function(id, inputs) {
         ghg_totals_by_country,
         inputs$kpi_years$key,
         inputs$kpi_primary_region$key,
-        ghg_totals_years,
+        ghg_tspc_years,
         "Mt"
       )
       s_ui <- get_secondary_ui(
         ghg_totals_by_country,
         inputs$kpi_years$key,
         inputs$kpi_secondary_region$key,
-        ghg_totals_years,
+        ghg_tspc_years,
         "Mt"
       )
       ui_to_show <- div(
@@ -66,14 +68,36 @@ server <- function(id, inputs) {
         ghg_per_capita_by_country,
         inputs$kpi_years$key,
         inputs$kpi_primary_region$key,
-        ghg_totals_years,
+        ghg_tspc_years,
         "t"
       )
       s_ui <- get_secondary_ui(
         ghg_per_capita_by_country,
         inputs$kpi_years$key,
         inputs$kpi_secondary_region$key,
-        ghg_totals_years,
+        ghg_tspc_years,
+        "t"
+      )
+      ui_to_show <- div(
+        p_ui,
+        s_ui
+      )
+      return(ui_to_show)
+    })
+
+    output$gdpghge <- renderUI({
+      p_ui <- get_primary_ui(
+        ghg_per_gdp_by_country,
+        inputs$kpi_years$key,
+        inputs$kpi_primary_region$key,
+        ghg_gdplulucf_years,
+        "t"
+      )
+      s_ui <- get_secondary_ui(
+        ghg_per_gdp_by_country,
+        inputs$kpi_years$key,
+        inputs$kpi_secondary_region$key,
+        ghg_gdplulucf_years,
         "t"
       )
       ui_to_show <- div(

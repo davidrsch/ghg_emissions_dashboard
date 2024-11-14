@@ -5,7 +5,7 @@ box::use(
 )
 
 box::use(
-  app/logic/data[edgar_cc, ghg_totals_years],
+  app/logic/data[edgar_cc, ghg_tspc_years],
   app/logic/get_options[get_options],
 )
 
@@ -17,11 +17,11 @@ ui <- function(id) {
       ns("kpi_years"),
       label = "Year",
       value = list(
-        key = last(ghg_totals_years),
-        text = last(ghg_totals_years)
+        key = last(ghg_tspc_years),
+        text = last(ghg_tspc_years)
       ),
       useComboBoxAsMenuWidth = TRUE,
-      options = get_options(ghg_totals_years),
+      options = get_options(ghg_tspc_years),
       calloutProps = list(
         styles = list(
           root = list(
