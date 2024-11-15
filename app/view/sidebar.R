@@ -148,6 +148,7 @@ server <- function(id) {
         )
       )
     })
-
+    
+    return(input)
   })
 }

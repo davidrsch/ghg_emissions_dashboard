@@ -45,9 +45,9 @@ ui <- function(id) {
 server <- function(id) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
-    sidebar$server("sidebar_A")
+    sidebar_controls <- sidebar$server("sidebar_A")
     inputs_to <- inputs$server("inputs")
     key_metrics$server("keymetrics", inputs_to)
-    top_regions$server("regions_tp", inputs_to)
+    top_regions$server("regions_tp", inputs_to, sidebar_controls)
   })
 }

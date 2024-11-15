@@ -1,12 +1,16 @@
 box::use(
+  dplyr[tibble],
   DT[datatable, dataTableProxy, DTOutput, formatCurrency, renderDT, replaceData, selectRows],
+  grDevices[colorRampPalette],
+  plotly[layout, plot_ly, plotlyOutput, renderPlotly],
   shiny.fluent[PrimaryButton.shinyInput, Stack, Text],
-  shiny[div, moduleServer, NS, observeEvent, renderUI, uiOutput],
+  shiny[div, moduleServer, NS, observeEvent, reactiveVal, renderUI, uiOutput],
   utils[tail],
 )
 
 box::use(
-  app/logic/top_regions_help[get_regions_emissions, get_regions_emissions_label],
+  app/logic/top_regions_help[get_countries_he, get_plot_title, get_regions_emissions],
+  app/logic/top_regions_help[get_regions_emissions_label],
 )
 
 #' @export
@@ -32,29 +36,43 @@ ui <- function(id) {
       ),
       class = "card ms-depth-8 ms-sm4",
       style = "background-color: #ffff; text-align: left;"
+    ),
+    div(
+      plotlyOutput(ns("top_emissions_chart"), height = "100%"),
+      class = "card ms-depth-8 ms-sm8",
+      style = "background-color: #ffff; overflow-y: auto;"
     )
-    # div(
-    #   Text("Total GHG Emissions:"),
-    #   uiOutput(ns("tghge")),
-    #   class = "card ms-depth-8 ms-sm6",
-    #   style = "background-color: #ffff; text-align: right;"
-    # )
   )
 }
 
 #' @export
-server <- function(id, inputs) {
+server <- function(id, inputs, sidebar_controls) {
   moduleServer(id, function(input, output, session) {
 
-    output$top_regions_table <- renderDT({
-      data <- get_regions_emissions(
+    top_data <- reactiveVal(tibble(country = NA, emission = NA))
+
+    observeEvent(
+      c(
         inputs$arrange_regions,
         inputs$kpi_years$key,
         inputs$arrange_regions_sectors,
         inputs$arrange_regions_substance
-      )
+      ),
+      {
+        top_data(
+          get_regions_emissions(
+            inputs$arrange_regions,
+            inputs$kpi_years$key,
+            inputs$arrange_regions_sectors,
+            inputs$arrange_regions_substance
+          )
+        )
+      }
+    )
+
+    output$top_regions_table <- renderDT({
       datatable(
-        data,
+        top_data(),
         filter = "top",
         options = list(
           lengthChange = FALSE,
@@ -87,12 +105,7 @@ server <- function(id, inputs) {
         selected <- tail(selected, 10)
         replaceData(
           top_regions_table_proxy,
-          get_regions_emissions(
-            inputs$arrange_regions,
-            inputs$kpi_years$key,
-            inputs$arrange_regions_sectors,
-            inputs$arrange_regions_substance
-          ),
+          top_data(),
           resetPaging = FALSE
         )
         selectRows(top_regions_table_proxy, selected)
@@ -112,15 +125,80 @@ server <- function(id, inputs) {
     observeEvent(input$deselect_btn, {
       replaceData(
         top_regions_table_proxy,
-        get_regions_emissions(
-          inputs$arrange_regions,
-          inputs$kpi_years$key,
-          inputs$arrange_regions_sectors,
-          inputs$arrange_regions_substance
-        ),
+        top_data(),
         resetPaging = FALSE
       )
     })
+
+    observeEvent(
+      c(
+        sidebar_controls$hide_sidebar_left,
+        sidebar_controls$show_sidebar_right,
+        inputs$arrange_regions,
+        inputs$arrange_regions_sectors,
+        inputs$arrange_regions_substance
+      ),
+      {
+        output$top_emissions_chart <- renderPlotly({
+          countries <- top_data()[input$top_regions_table_rows_selected, "country"][[1]]
+          if (all(is.na(countries))) {
+            plot_ly(type = "scatter", mode = "text") |>
+              layout(
+                title = "No Data Available",
+                xaxis = list(visible = FALSE),
+                yaxis = list(visible = FALSE),
+                annotations = list(
+                  text = "No data available",
+                  x = 0.5,
+                  y = 0.5,
+                  xref = "paper",
+                  yref = "paper",
+                  showarrow = FALSE,
+                  font = list(size = 20)
+                )
+              )
+          } else {
+            plot_data <- get_countries_he(
+              inputs$arrange_regions,
+              countries,
+              inputs$arrange_regions_sectors,
+              inputs$arrange_regions_substance
+            )
+            unique_countries <- length(countries)
+            colors <- colorRampPalette(RColorBrewer::brewer.pal(8, "Set2"))(unique_countries)
+            plot_title <- get_plot_title(
+              inputs$arrange_regions,
+              inputs$arrange_regions_sectors,
+              inputs$arrange_regions_substance
+            ) 
+            y_axis_label <- ifelse(
+              is.element(
+                inputs$arrange_regions,
+                c("Total emissions", "Sector", "Substance", "Sector & Substance")
+              ),
+              "Emissions in Mt",
+              "Emissions in t"
+            )
+            plot_ly(
+              plot_data,
+              x = ~year,
+              y = ~emission,
+              color = ~country,
+              colors = colors,
+              type = "scatter",
+              mode = "lines+markers"
+            ) |>
+              layout(
+                title = plot_title,
+                xaxis = list(title = "Date"),
+                yaxis = list(title = y_axis_label),
+                legend = list(title = list(text = "Countries")),
+                autosize = TRUE
+              )
+          }
+        })
+      }
+    )
 
   })
 }
