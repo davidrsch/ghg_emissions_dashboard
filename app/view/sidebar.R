@@ -9,7 +9,7 @@ ui <- function(id, name, title, sidebar_content, sidebar_bgc, main_content, main
   ns <- NS(id)
   div(
     class = "ms-Grid-row",
-    style = "display: flex; flex-wrap: wrap;",
+    style = "display: flex; flex-wrap: wrap; height: calc(100vh - 65px); overflow: hidden;",
     div(
       id = ns("sidebar"),
       class = "ms-Grid-col ms-sm12 ms-xl2",
@@ -42,19 +42,16 @@ ui <- function(id, name, title, sidebar_content, sidebar_bgc, main_content, main
     div(
       id = ns("main"),
       class = "ms-Grid-col ms-sm12 ms-xl10",
-      style = paste0("background-color:", main_bgc),
+      style = paste0("background-color:", main_bgc, "; overflow-y: auto; height: 100%;"),
       div(
         class = "ms-hiddenLgDown",
+        style = "position: sticky; top: 0; left:0; z-index: 1",
         IconButton.shinyInput(
           ns("show_sidebar_right"),
           iconProps = list(iconName = "ChevronRightMed"),
           `data-testid` = paste0("show_sidebar", name),
           styles = list(
             root = list(
-              "position" = "absolute",
-              "top" = "0",
-              "left" = "0",
-              "z-index" = "1",
               "visibility" = "hidden"
             )
           )
@@ -62,17 +59,16 @@ ui <- function(id, name, title, sidebar_content, sidebar_bgc, main_content, main
       ),
       div(
         class = "ms-hiddenXlUp",
+        style = "position: sticky; top: 0; right:0; z-index: 1",
         IconButton.shinyInput(
           ns("show_sidebar_down"),
           iconProps = list(iconName = "ChevronDownMed"),
           `data-testid` = paste0("show_sidebar", name),
           styles = list(
             root = list(
+              "visibility" = "hidden",
               "position" = "absolute",
-              "top" = "0",
-              "right" = "0",
-              "z-index" = "1",
-              "visibility" = "hidden"
+              "right" = "0"
             )
           )
         )
@@ -95,10 +91,6 @@ server <- function(id) {
         "show_sidebar_right",
         styles = list(
           root = list(
-            "position" = "absolute",
-            "top" = "0",
-            "left" = "0",
-            "z-index" = "1",
             "visibility" = "show"
           )
         )
@@ -108,11 +100,9 @@ server <- function(id) {
         "show_sidebar_down",
         styles = list(
           root = list(
+            "visibility" = "show",
             "position" = "absolute",
-            "top" = "0",
-            "right" = "0",
-            "z-index" = "1",
-            "visibility" = "show"
+            "right" = "0"
           )
         )
       )
@@ -126,10 +116,6 @@ server <- function(id) {
         "show_sidebar_right",
         styles = list(
           root = list(
-            "position" = "absolute",
-            "top" = "0",
-            "left" = "0",
-            "z-index" = "1",
             "visibility" = "hidden"
           )
         )
@@ -139,11 +125,9 @@ server <- function(id) {
         "show_sidebar_down",
         styles = list(
           root = list(
+            "visibility" = "hidden",
             "position" = "absolute",
-            "top" = "0",
-            "right" = "0",
-            "z-index" = "1",
-            "visibility" = "hidden"
+            "right" = "0"
           )
         )
       )
