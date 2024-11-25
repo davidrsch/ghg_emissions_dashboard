@@ -120,7 +120,7 @@ get_country_he <- function(
   } else if (arrange_regions == "Substance") {
     data_to <- sector_substance_data |>
       filter(country == actual_country) |>
-      filter(substance == elected_substance) |>
+      filter(substance == selected_substance) |>
       select(country, substance, matches("x\\d{4}")) |>
       group_by(country, substance) |>
       summarise(across(matches("x\\d{4}"), sum)) |>
