@@ -37,6 +37,13 @@ server <- function(id, inputs, sidebar_controls, countries) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
 
+    selected_sectors <- reactiveVal(
+      tibble(
+        sector = unique(ghg_by_sector_and_country$sector),
+        visible = 1
+      )
+    )
+
     observeEvent(
       c(
         sidebar_controls$hide_sidebar_left,
@@ -94,9 +101,12 @@ server <- function(id, inputs, sidebar_controls, countries) {
                 xaxis = list(title = "Country"),
                 yaxis = list(title = "Emission by sector")
               )
+            event_register(p, "plotly_legendclick")
+            #event_register(p, "plotly_legenddoubleclick")
           }
         })
       }
     )
 
+  })
 }
