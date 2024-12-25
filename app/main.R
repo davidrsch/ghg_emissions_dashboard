@@ -7,6 +7,7 @@ box::use(
 box::use(
   app/view/inputs,
   app/view/key_metrics,
+  app/view/sector,
   app/view/sidebar,
   app/view/top_regions,
 )
@@ -22,7 +23,7 @@ ui <- function(id) {
         "Global Greenhouse Gas Emissions Overview"
       ),
       PivotItem(
-        headerText = "A",
+        headerText = "Overview",
         sidebar$ui(
           id = ns("sidebar_A"),
           name = "a_sidebar",
@@ -30,8 +31,10 @@ ui <- function(id) {
           sidebar_content = inputs$ui(ns("inputs")),
           sidebar_bgc = "#ffff",
           main_content = div(
+            style = "position: absolute; top: 0; width: calc(100% - 16px);",
             key_metrics$ui(ns("keymetrics")),
-            top_regions$ui(ns("regions_tp"))
+            top_regions$ui(ns("regions_tp")),
+            sector$ui(ns("sector_metrics"))
           ),
           main_bgc = "#DADAD9"
         )
@@ -48,6 +51,7 @@ server <- function(id) {
     sidebar_controls <- sidebar$server("sidebar_A")
     inputs_to <- inputs$server("inputs")
     key_metrics$server("keymetrics", inputs_to)
-    top_regions$server("regions_tp", inputs_to, sidebar_controls)
+    countries <- top_regions$server("regions_tp", inputs_to, sidebar_controls)
+    sector$server("sector_metrics", inputs_to, sidebar_controls, countries)
   })
 }
