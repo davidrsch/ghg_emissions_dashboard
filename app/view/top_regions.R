@@ -34,12 +34,12 @@ ui <- function(id) {
         horizontalAlign = "center",
         PrimaryButton.shinyInput(ns("deselect_btn"), text = "Deselect All Rows"),
       ),
-      class = "card ms-depth-8 ms-sm4",
+      class = "card ms-depth-8 ms-sm12 ms-xl4",
       style = "background-color: #ffff; text-align: left;"
     ),
     div(
       plotlyOutput(ns("top_emissions_chart"), height = "100%"),
-      class = "card ms-depth-8 ms-sm8",
+      class = "card ms-depth-8 ms-sm12 ms-xl8",
       style = "background-color: #ffff; overflow-y: auto;"
     )
   )
@@ -130,6 +130,8 @@ server <- function(id, inputs, sidebar_controls) {
       )
     })
 
+    countries <- reactiveVal(NA)
+
     observeEvent(
       c(
         sidebar_controls$hide_sidebar_left,
@@ -140,8 +142,8 @@ server <- function(id, inputs, sidebar_controls) {
       ),
       {
         output$top_emissions_chart <- renderPlotly({
-          countries <- top_data()[input$top_regions_table_rows_selected, "country"][[1]]
-          if (all(is.na(countries))) {
+          countries(top_data()[input$top_regions_table_rows_selected, "country"][[1]])
+          if (all(is.na(countries()))) {
             plot_ly(type = "scatter", mode = "text") |>
               layout(
                 title = "No Data Available",
@@ -160,11 +162,11 @@ server <- function(id, inputs, sidebar_controls) {
           } else {
             plot_data <- get_countries_he(
               inputs$arrange_regions,
-              countries,
+              countries(),
               inputs$arrange_regions_sectors,
               inputs$arrange_regions_substance
             )
-            unique_countries <- length(countries)
+            unique_countries <- length(countries())
             colors <- colorRampPalette(RColorBrewer::brewer.pal(8, "Set2"))(unique_countries)
             plot_title <- get_plot_title(
               inputs$arrange_regions,
@@ -199,6 +201,8 @@ server <- function(id, inputs, sidebar_controls) {
         })
       }
     )
+
+    return(countries)
 
   })
 }
