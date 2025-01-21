@@ -9,7 +9,7 @@ Launch application:
 shiny::runGitHub(repo = "davidrsch/ghg_emissions_dashboard", ref = "main")
 ```
 
-<!--- or try it at connect.posit.cloud. --->
+or try it at [connect.posit.cloud](https://01948ad2-9d8f-5b40-7895-edbf812b72ed.share.connect.posit.cloud/)
 
 ## Features
 * Global Emissions Trends: Explore year-over-year changes in total global emissions.
