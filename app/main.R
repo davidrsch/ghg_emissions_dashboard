@@ -7,7 +7,7 @@ box::use(
 box::use(
   app/view/inputs,
   app/view/key_metrics,
-  app/view/sector,
+  app/view/sector_substance,
   app/view/sidebar,
   app/view/top_regions,
 )
@@ -34,7 +34,7 @@ ui <- function(id) {
             style = "position: absolute; top: 0; width: calc(100% - 16px);",
             key_metrics$ui(ns("keymetrics")),
             top_regions$ui(ns("regions_tp")),
-            sector$ui(ns("sector_metrics"))
+            sector_substance$ui(ns("sector_metrics"))
           ),
           main_bgc = "#DADAD9"
         )
@@ -52,6 +52,6 @@ server <- function(id) {
     inputs_to <- inputs$server("inputs")
     key_metrics$server("keymetrics", inputs_to)
     countries <- top_regions$server("regions_tp", inputs_to, sidebar_controls)
-    sector$server("sector_metrics", inputs_to, sidebar_controls, countries)
+    sector_substance$server("sector_metrics", inputs_to, sidebar_controls, countries, input)
   })
 }
