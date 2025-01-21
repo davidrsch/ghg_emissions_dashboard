@@ -172,7 +172,7 @@ server <- function(id, inputs, sidebar_controls) {
               inputs$arrange_regions,
               inputs$arrange_regions_sectors,
               inputs$arrange_regions_substance
-            ) 
+            )
             y_axis_label <- ifelse(
               is.element(
                 inputs$arrange_regions,
