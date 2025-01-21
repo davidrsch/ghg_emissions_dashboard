@@ -10,6 +10,7 @@ box::use(
   app/view/sector_substance,
   app/view/sidebar,
   app/view/top_regions,
+  app/view/wellcome,
 )
 
 #' @export
@@ -20,7 +21,7 @@ ui <- function(id) {
     Pivot(
       PivotItem(
         headerText = "Wellcome",
-        "Global Greenhouse Gas Emissions Overview"
+        wellcome$ui(id = ns("wellcome"))
       ),
       PivotItem(
         headerText = "Overview",
