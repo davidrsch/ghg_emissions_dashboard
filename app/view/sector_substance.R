@@ -179,119 +179,147 @@ server <- function(id, inputs, sidebar_controls, countries, main_inputs) {
       }
     )
 
-    output$stacked_sectors <- renderPlotly({
-      if (all(is.na(countries()))) {
-        plot_ly(type = "scatter", mode = "text") |>
-          layout(
-            title = "No Data Available",
-            xaxis = list(visible = FALSE),
-            yaxis = list(visible = FALSE),
-            annotations = list(
-              text = "No data available",
-              x = 0.5,
-              y = 0.5,
-              xref = "paper",
-              yref = "paper",
-              showarrow = FALSE,
-              font = list(size = 20)
-            )
-          )
-      } else {
-        ghg_by_sector_and_country |>
-          filter(country %in% countries()) |>
-          filter(substance %in% selected_substance()) |>
-          filter(sector %in% selected_sector()) |>
-          group_by(country, sector) |>
-          summarise(
-            emission = sum(.data[[paste0("x", inputs$kpi_years$key)]], na.rm = TRUE)
-          ) |>
-          ungroup() |>
-          group_by(country) |>
-          mutate(total_emission = sum(emission)) |>
-          ungroup() |>
-          arrange(desc(total_emission), country) |>
-          plot_ly(
-            x = ~factor(country, levels = unique(country)),
-            y = ~emission,
-            color = ~sector,
-            colors = colors_sector |>
-              rename(
-                name = sector,
-                value = color
-              ) |>
-              select(name, value) |>
-              deframe(),
-            type = "bar"
-          ) |>
-          layout(
-            showlegend = FALSE,
-            barmode = "stack",
-            title = paste0(
-              "Sector contribution of selected countries in ",
-              inputs$kpi_years$key
-            ),
-            xaxis = list(title = "Country"),
-            yaxis = list(title = "Emission by sector")
-          )
-      }
-    })
+    observeEvent(
+      c(
+        sidebar_controls$hide_sidebar_left,
+        sidebar_controls$show_sidebar_right,
+        countries,
+        inputs$kpi_years$key,
+        selected_substance,
+        selected_sector
+      ),
+      {
 
-    output$stacked_substance <- renderPlotly({
-      if (all(is.na(countries()))) {
-        plot_ly(type = "scatter", mode = "text") |>
-          layout(
-            title = "No Data Available",
-            xaxis = list(visible = FALSE),
-            yaxis = list(visible = FALSE),
-            annotations = list(
-              text = "No data available",
-              x = 0.5,
-              y = 0.5,
-              xref = "paper",
-              yref = "paper",
-              showarrow = FALSE,
-              font = list(size = 20)
-            )
-          )
-      } else {
-        ghg_by_sector_and_country |>
-          filter(country %in% countries()) |>
-          filter(sector %in% selected_sector()) |>
-          filter(substance %in% selected_substance()) |>
-          group_by(country, substance) |>
-          summarise(
-            emission = sum(.data[[paste0("x", inputs$kpi_years$key)]], na.rm = TRUE)
-          ) |>
-          ungroup() |>
-          group_by(country) |>
-          mutate(total_emission = sum(emission)) |>
-          ungroup() |>
-          arrange(desc(total_emission), country) |>
-          plot_ly(
-            x = ~factor(country, levels = unique(country)),
-            y = ~emission,
-            color = ~substance,
-            colors = colors_substance |>
-              rename(
-                name = substance,
-                value = color
+        output$stacked_sectors <- renderPlotly({
+          if (all(is.na(countries()))) {
+            plot_ly(type = "scatter", mode = "text") |>
+              layout(
+                title = "No Data Available",
+                xaxis = list(visible = FALSE),
+                yaxis = list(visible = FALSE),
+                annotations = list(
+                  text = "No data available",
+                  x = 0.5,
+                  y = 0.5,
+                  xref = "paper",
+                  yref = "paper",
+                  showarrow = FALSE,
+                  font = list(size = 20)
+                )
+              )
+          } else {
+            ghg_by_sector_and_country |>
+              filter(country %in% countries()) |>
+              filter(substance %in% selected_substance()) |>
+              filter(sector %in% selected_sector()) |>
+              group_by(country, sector) |>
+              summarise(
+                emission = sum(.data[[paste0("x", inputs$kpi_years$key)]], na.rm = TRUE)
               ) |>
-              select(name, value) |>
-              deframe(),
-            type = "bar"
-          ) |>
-          layout(
-            showlegend = FALSE,
-            barmode = "stack",
-            title = paste0(
-              "Substance contribution of selected countries in ",
-              inputs$kpi_years$key
-            ),
-            xaxis = list(title = "Country"),
-            yaxis = list(title = "Emission by susbstance")
-          )
+              ungroup() |>
+              group_by(country) |>
+              mutate(total_emission = sum(emission)) |>
+              ungroup() |>
+              arrange(desc(total_emission), country) |>
+              plot_ly(
+                x = ~factor(country, levels = unique(country)),
+                y = ~emission,
+                color = ~sector,
+                colors = colors_sector |>
+                  rename(
+                    name = sector,
+                    value = color
+                  ) |>
+                  select(name, value) |>
+                  deframe(),
+                type = "bar"
+              ) |>
+              layout(
+                showlegend = FALSE,
+                barmode = "stack",
+                title = paste0(
+                  "Sector contribution of selected countries in ",
+                  inputs$kpi_years$key
+                ),
+                xaxis = list(title = "Country"),
+                yaxis = list(title = "Emission by sector")
+              )
+          }
+        })
+
       }
-    })
+    )
+
+    observeEvent(
+      c(
+        sidebar_controls$hide_sidebar_left,
+        sidebar_controls$show_sidebar_right,
+        countries,
+        inputs$kpi_years$key,
+        selected_substance,
+        selected_sector
+      ),
+      {
+
+        output$stacked_substance <- renderPlotly({
+          if (all(is.na(countries()))) {
+            plot_ly(type = "scatter", mode = "text") |>
+              layout(
+                title = "No Data Available",
+                xaxis = list(visible = FALSE),
+                yaxis = list(visible = FALSE),
+                annotations = list(
+                  text = "No data available",
+                  x = 0.5,
+                  y = 0.5,
+                  xref = "paper",
+                  yref = "paper",
+                  showarrow = FALSE,
+                  font = list(size = 20)
+                )
+              )
+          } else {
+            ghg_by_sector_and_country |>
+              filter(country %in% countries()) |>
+              filter(sector %in% selected_sector()) |>
+              filter(substance %in% selected_substance()) |>
+              group_by(country, substance) |>
+              summarise(
+                emission = sum(.data[[paste0("x", inputs$kpi_years$key)]], na.rm = TRUE)
+              ) |>
+              ungroup() |>
+              group_by(country) |>
+              mutate(total_emission = sum(emission)) |>
+              ungroup() |>
+              arrange(desc(total_emission), country) |>
+              plot_ly(
+                x = ~factor(country, levels = unique(country)),
+                y = ~emission,
+                color = ~substance,
+                colors = colors_substance |>
+                  rename(
+                    name = substance,
+                    value = color
+                  ) |>
+                  select(name, value) |>
+                  deframe(),
+                type = "bar"
+              ) |>
+              layout(
+                showlegend = FALSE,
+                barmode = "stack",
+                title = paste0(
+                  "Substance contribution of selected countries in ",
+                  inputs$kpi_years$key
+                ),
+                xaxis = list(title = "Country"),
+                yaxis = list(title = "Emission by susbstance")
+              )
+          }
+        })
+
+      }
+    )
 
   })
 }
