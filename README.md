@@ -5,7 +5,7 @@ You can see the dependencies in the dependecies.R file
 
 Launch application:
 
-```{r}
+```r
 shiny::runGitHub(repo = "davidrsch/ghg_emissions_dashboard", ref = "main")
 ```
 
