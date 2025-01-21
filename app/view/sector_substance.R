@@ -237,9 +237,14 @@ server <- function(id, inputs, sidebar_controls, countries, main_inputs) {
               layout(
                 showlegend = FALSE,
                 barmode = "stack",
-                title = paste0(
-                  "Sector contribution of selected countries in ",
-                  inputs$kpi_years$key
+                title = list(
+                  text = paste0(
+                    "Sector contribution of selected countries in ",
+                    inputs$kpi_years$key
+                  ),
+                  font = list(
+                    size = 18
+                  )
                 ),
                 xaxis = list(title = "Country"),
                 yaxis = list(title = "Emission by sector")
@@ -308,9 +313,14 @@ server <- function(id, inputs, sidebar_controls, countries, main_inputs) {
               layout(
                 showlegend = FALSE,
                 barmode = "stack",
-                title = paste0(
-                  "Substance contribution of selected countries in ",
-                  inputs$kpi_years$key
+                title = list(
+                  text = paste0(
+                    "Substance contribution of selected countries in ",
+                    inputs$kpi_years$key
+                  ),
+                  font = list(
+                    size = 18
+                  )
                 ),
                 xaxis = list(title = "Country"),
                 yaxis = list(title = "Emission by susbstance")

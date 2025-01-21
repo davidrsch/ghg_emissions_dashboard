@@ -87,7 +87,8 @@ ui <- function(id) {
       styles = list(
         root = list(
           "visibility" = "hidden",
-          "display" = "none"
+          "display" = "none",
+          "font-weight" = "400"
         )
       ),
       calloutProps = list(
@@ -106,7 +107,8 @@ ui <- function(id) {
       styles = list(
         root = list(
           "visibility" = "hidden",
-          "display" = "none"
+          "display" = "none",
+          "font-weight" = "400"
         )
       ),
       calloutProps = list(
@@ -131,7 +133,10 @@ server <- function(id) {
           styles = list(
             root = list(
               "visibility" = "show",
-              "display" = "block"
+              "display" = "block",
+              "label" = list(
+                "font-weight" = "400"
+              )
             )
           ),
           calloutProps = list(
@@ -169,7 +174,10 @@ server <- function(id) {
           styles = list(
             root = list(
               "visibility" = "show",
-              "display" = "block"
+              "display" = "block",
+              "label" = list(
+                "font-weight" = "400"
+              )
             )
           ),
           calloutProps = list(
