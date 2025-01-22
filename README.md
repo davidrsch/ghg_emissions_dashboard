@@ -25,4 +25,4 @@ https://edgar.jrc.ec.europa.eu.
 ## Usage
 The dashboard is an independent tool created for educational, exploratory, and analytical purposes. It does not represent the official views of the European Commission. Users should cite the data as specified in official source, which can be found at:
 
-> EDGAR 2024 Global Greenhouse Gas Emissions Data, Emissions Database for Global Atmospheric Research (EDGAR), Joint Research Centre (JRC) of the European Commission.
+> EDGAR 2024 Global Greenhouse Gas Emissions Data, Emissions Database for Global Atmospheric Research (EDGAR), Joint Research Centre (JRC) of the European Commission. [https://edgar.jrc.ec.europa.eu](https://edgar.jrc.ec.europa.eu)
