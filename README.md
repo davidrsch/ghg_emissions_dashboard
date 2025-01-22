@@ -1,5 +1,5 @@
 # ghg_emissions_dashboard
-Welcome to the Greenhouse Gas Emissions Insights Dashboard repository! This project provides a dynamic, interactive visualization tool built using data from the 2024 Emissions Database for Global Atmospheric Research (EDGAR). The dashboard is designed to make complex data on global greenhouse gas (GHG) emissions accessible, engaging, and insightful.
+<img src="logo.png" alt="Cover image" width="285" align="right" style="margin: 1em"/> Welcome to the Greenhouse Gas Emissions Insights Dashboard repository! This project provides a dynamic, interactive visualization tool built using data from the 2024 Emissions Database for Global Atmospheric Research (EDGAR). The dashboard is designed to make complex data on global greenhouse gas (GHG) emissions accessible, engaging, and insightful.
 
 You can see the dependencies in the dependecies.R file
 
