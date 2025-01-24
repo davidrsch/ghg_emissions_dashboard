@@ -2,7 +2,7 @@ box::use(
   dplyr[tibble],
   DT[datatable, dataTableProxy, DTOutput, formatCurrency, renderDT, replaceData, selectRows],
   grDevices[colorRampPalette],
-  plotly[layout, plot_ly, plotlyOutput, renderPlotly],
+  plotly[config, layout, plot_ly, plotlyOutput, renderPlotly],
   shiny.fluent[PrimaryButton.shinyInput, Stack, Text],
   shiny[div, moduleServer, NS, observeEvent, reactiveVal, renderUI, uiOutput],
   utils[tail],
@@ -190,10 +190,14 @@ server <- function(id, inputs, sidebar_controls) {
               type = "scatter",
               mode = "lines+markers"
             ) |>
+              config(displayModeBar = "always") |> 
               layout(
                 title = plot_title,
-                xaxis = list(title = "Date"),
-                yaxis = list(title = y_axis_label),
+                xaxis = list(
+                  title = "Date"
+                ),
+                yaxis = list(
+                  title = y_axis_label),
                 legend = list(title = list(text = "Countries")),
                 autosize = TRUE
               )

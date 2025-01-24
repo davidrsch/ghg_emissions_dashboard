@@ -1,7 +1,7 @@
 box::use(
   dplyr[arrange, desc, filter, group_by, mutate, rename, select, summarise],
   dplyr[tibble, ungroup],
-  plotly[layout, plot_ly, plotlyOutput, renderPlotly],
+  plotly[config, layout, plot_ly, plotlyOutput, renderPlotly],
   shiny.fluent[Stack],
   shiny[div, moduleServer, NS, observeEvent, reactiveVal, renderUI, uiOutput],
   tibble[deframe],
@@ -86,6 +86,7 @@ server <- function(id, inputs, sidebar_controls, countries, main_inputs) {
     # Create styled filter for sectors plot
     output$sector_plot_filters <- renderUI({
       div(
+        div(style = "height: 80px;"),
         apply(colors_sector, MARGIN = 1, FUN = function(sector) {
           shiny.fluent::Checkbox.shinyInput(
             inputId = ns(paste0("filter_sector_", gsub(" ", "_", sector[[1]]))),
@@ -114,6 +115,7 @@ server <- function(id, inputs, sidebar_controls, countries, main_inputs) {
     # Create styled filter for sectors plot
     output$substance_plot_filters <- renderUI({
       div(
+        div(style = "height: 80px;"),
         apply(colors_substance, MARGIN = 1, FUN = function(substance) {
           shiny.fluent::Checkbox.shinyInput(
             inputId = ns(paste0("filter_substance_", substance[[1]])),
@@ -234,18 +236,19 @@ server <- function(id, inputs, sidebar_controls, countries, main_inputs) {
                   deframe(),
                 type = "bar"
               ) |>
+              config(displayModeBar = "always") |> 
               layout(
                 showlegend = FALSE,
                 barmode = "stack",
                 title = list(
                   text = paste0(
+                    "<span style='font-size:1rem;'>",
                     "Sector contribution of selected countries in ",
-                    inputs$kpi_years$key
-                  ),
-                  font = list(
-                    size = 18
+                    inputs$kpi_years$key,
+                    "</span>"
                   )
                 ),
+                margin = list(t = 80),
                 xaxis = list(title = "Country"),
                 yaxis = list(title = "Emission by sector")
               )
@@ -310,18 +313,19 @@ server <- function(id, inputs, sidebar_controls, countries, main_inputs) {
                   deframe(),
                 type = "bar"
               ) |>
+              config(displayModeBar = "always") |> 
               layout(
                 showlegend = FALSE,
                 barmode = "stack",
                 title = list(
                   text = paste0(
+                    "<span style='font-size:1rem;'>",
                     "Substance contribution of selected countries in ",
-                    inputs$kpi_years$key
-                  ),
-                  font = list(
-                    size = 18
+                    inputs$kpi_years$key,
+                    "</span>"
                   )
                 ),
+                margin = list(t = 80),
                 xaxis = list(title = "Country"),
                 yaxis = list(title = "Emission by susbstance")
               )
