@@ -53,14 +53,14 @@ server <- function(id, inputs) {
       p_ui <- get_primary_ui(
         ghg_totals_by_country,
         inputs$kpi_years$key,
-        inputs$kpi_primary_region$key,
+        inputs$`kpi_primary_region-searchable_cb`$key,
         ghg_tspc_years,
         "Mt"
       )
       s_ui <- get_secondary_ui(
         ghg_totals_by_country,
         inputs$kpi_years$key,
-        inputs$kpi_secondary_region$key,
+        inputs$`kpi_secondary_region-searchable_cb`$key,
         ghg_tspc_years,
         "Mt"
       )
@@ -75,14 +75,14 @@ server <- function(id, inputs) {
       p_ui <- get_primary_ui(
         ghg_per_capita_by_country,
         inputs$kpi_years$key,
-        inputs$kpi_primary_region$key,
+        inputs$`kpi_primary_region-searchable_cb`$key,
         ghg_tspc_years,
         "t"
       )
       s_ui <- get_secondary_ui(
         ghg_per_capita_by_country,
         inputs$kpi_years$key,
-        inputs$kpi_secondary_region$key,
+        inputs$`kpi_secondary_region-searchable_cb`$key,
         ghg_tspc_years,
         "t"
       )
@@ -97,14 +97,14 @@ server <- function(id, inputs) {
       p_ui <- get_primary_ui(
         ghg_per_gdp_by_country,
         inputs$kpi_years$key,
-        inputs$kpi_primary_region$key,
+        inputs$`kpi_primary_region-searchable_cb`$key,
         ghg_gdplulucf_years,
         "t"
       )
       s_ui <- get_secondary_ui(
         ghg_per_gdp_by_country,
         inputs$kpi_years$key,
-        inputs$kpi_secondary_region$key,
+        inputs$`kpi_secondary_region-searchable_cb`$key,
         ghg_gdplulucf_years,
         "t"
       )

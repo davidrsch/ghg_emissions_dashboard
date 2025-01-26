@@ -1,15 +1,14 @@
 box::use(
   dplyr[last],
-  purrr[discard],
-  shiny.fluent[ComboBox.shinyInput, Dropdown.shinyInput, updateComboBox.shinyInput],
+  shiny.fluent[ComboBox.shinyInput, Dropdown.shinyInput],
   shiny.fluent[updateDropdown.shinyInput],
   shiny[div, getDefaultReactiveDomain, moduleServer, NS, observeEvent],
-  stringr[str_detect, str_replace, str_to_lower],
 )
 
 box::use(
   app/logic/data[edgar_cc, ghg_tspc_years, sectors, substances],
   app/logic/get_options[get_options],
+  app/view/combobox_search,
 )
 
 #' @export
@@ -33,43 +32,19 @@ ui <- function(id) {
         )
       )
     ),
-    ComboBox.shinyInput(
+    combobox_search$ui(
       ns("kpi_primary_region"),
-      label = "Primary region",
-      value = list(
-        key = "GLB",
-        text = "GLB (GLOBAL)"
-      ),
-      allowFreeform = TRUE,
-      useComboBoxAsMenuWidth = TRUE,
-      options = get_options(edgar_cc),
-      calloutProps = list(
-        styles = list(
-          root = list(
-            "max-height" = "300px!important"
-          )
-        )
-      ),
-      `data-test` = "kpi_primary_region"
+      cb_label = "Primary region",
+      default_key = "GLB",
+      default_text = "GLB (GLOBAL)",
+      cb_options = get_options(edgar_cc)
     ),
-    ComboBox.shinyInput(
+    combobox_search$ui(
       ns("kpi_secondary_region"),
-      label = "Secondary region",
-      value = list(
-        key = "EU27",
-        text = "EU27 (Europe)"
-      ),
-      allowFreeform = TRUE,
-      useComboBoxAsMenuWidth = TRUE,
-      options = get_options(edgar_cc),
-      calloutProps = list(
-        styles = list(
-          root = list(
-            "max-height" = "300px!important"
-          )
-        )
-      ),
-      `data-test` = "kpi_secondary_region"
+      cb_label = "Secondary region",
+      default_key = "EU27",
+      default_text = "EU27 (Europe)",
+      cb_options = get_options(edgar_cc)
     ),
     Dropdown.shinyInput(
       ns("arrange_regions"),
@@ -134,109 +109,17 @@ server <- function(id) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
 
-    # Implement fuzy search in primary region combobox
-    observeEvent(input$kpi_primary_region_query, {
-      query <- input$kpi_primary_region_query
-      all_options <- get_options(edgar_cc)
+    combobox_search$server(
+      "kpi_primary_region",
+      default_text = "GLB (GLOBAL)",
+      cb_options = get_options(edgar_cc)
+    )
 
-      if (query == "") {
-        query <- "GLB (GLOBAL)"
-      }
-
-      # Filter options based on the query
-      if (!is.null(query)) {
-        filtered_options <- all_options |>
-          lapply(function(x) {
-            query_to <- query |>
-              str_replace("\\(", "") |>
-              str_replace("\\)", "") |>
-              str_to_lower()
-            text <- x$text |>
-              str_replace("\\(", "") |>
-              str_replace("\\)", "") |>
-              str_to_lower()
-            if (str_detect(text, query_to)) {
-              x
-            } else {
-              NULL
-            }
-          })
-        filtered_options <- filtered_options |>
-          discard(is.null)
-      } else {
-        filtered_options <- all_options
-      }
-
-      # Update the ComboBox with filtered options
-      updateComboBox.shinyInput(
-        session = getDefaultReactiveDomain(),
-        "kpi_primary_region",
-        options = filtered_options
-      )
-    })
-
-    # Update combo box to include all options once one it's selected
-    observeEvent(input$kpi_primary_region, {
-      all_options <- get_options(edgar_cc)
-
-      updateComboBox.shinyInput(
-        session = getDefaultReactiveDomain(),
-        "kpi_primary_region",
-        options = all_options
-      )
-    })
-
-    # Implement fuzy search in secondary region combobox
-    observeEvent(input$kpi_secondary_region_query, {
-      query <- input$kpi_secondary_region_query
-      all_options <- get_options(edgar_cc)
-
-      if (query == "") {
-        query <- "EU27 (Europe)"
-      }
-
-      # Filter options based on the query
-      if (!is.null(query)) {
-        filtered_options <- all_options |>
-          lapply(function(x) {
-            query_to <- query |>
-              str_replace("\\(", "") |>
-              str_replace("\\)", "") |>
-              str_to_lower()
-            text <- x$text |>
-              str_replace("\\(", "") |>
-              str_replace("\\)", "") |>
-              str_to_lower()
-            if (str_detect(text, query_to)) {
-              x
-            } else {
-              NULL
-            }
-          })
-        filtered_options <- filtered_options |>
-          discard(is.null)
-      } else {
-        filtered_options <- all_options
-      }
-
-      # Update the ComboBox with filtered options
-      updateComboBox.shinyInput(
-        session = getDefaultReactiveDomain(),
-        "kpi_secondary_region",
-        options = filtered_options
-      )
-    })
-
-    # Update combo box to include all options once one it's selected
-    observeEvent(input$kpi_secondary_region, {
-      all_options <- get_options(edgar_cc)
-
-      updateComboBox.shinyInput(
-        session = getDefaultReactiveDomain(),
-        "kpi_secondary_region",
-        options = all_options
-      )
-    })
+    combobox_search$server(
+      "kpi_secondary_region",
+      default_text = "EU27 (Europe)",
+      cb_options = get_options(edgar_cc)
+    )
 
     observeEvent(input$arrange_regions, {
       if (is.element(input$arrange_regions, c("Sector", "Sector & Substance"))) {

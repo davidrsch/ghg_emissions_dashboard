@@ -8,33 +8,31 @@
  * 2. If the dropdown is not open, it clicks the associated button to open the dropdown.
  * 3. Updates the Shiny input value (`app-inputs-primaryquery`) with the current input value.
  */
-function ComboBoxquery(cbidentified) {
+function ComboBoxquery(module, cbIdentity) {
   // Add an event listener for input events on the target combobox's input field
   $(document).on(
     'input',
-    `[data-test="${cbidentified}"] div input`,
+    `[data-test="${cbIdentity}"] div input`,
     () => {
-      const inputValue = this.value; // The current value of the input field
-      console.log('Input changed:', inputValue); // Log the value for debugging
+      const inputValue = document.querySelector(
+        `[data-test="${cbIdentity}"] div input`,
+      ).value;
 
       // Select the combobox container and button elements
       const dropdownContainer = document.querySelector(
-        `[data-test="${cbidentified}"] div`,
+        `[data-test="${cbIdentity}"] div`,
       );
       const dropdownButton = document.querySelector(
-        `[data-test="${cbidentified}"] div button`,
+        `[data-test="${cbIdentity}"] div button`,
       );
 
       // Check if the dropdown is open by inspecting the 'is-open' class
       if (!dropdownContainer.classList.contains('is-open')) {
-        console.log('Dropdown is not open. Clicking the button to open it...');
-        dropdownButton.click(); // Open the dropdown by simulating a button click
-      } else {
-        console.log('Dropdown is already open. No action needed.');
+        dropdownButton.click();
       }
 
       // Update the corresponding Shiny input value with the current input
-      Shiny.setInputValue(`app-inputs-${cbidentified}_query`, inputValue);
+      Shiny.setInputValue(`app-${module}-${cbIdentity}-searchable_cb_query`, inputValue);
     },
   );
 }
@@ -43,7 +41,7 @@ $(() => {
   // Waiting for `{shiny}` to be connected
   $(document).on('shiny:connected', () => {
     // Use delegated event binding
-    ComboBoxquery('kpi_primary_region');
-    ComboBoxquery('kpi_secondary_region');
+    ComboBoxquery('inputs', 'kpi_primary_region');
+    ComboBoxquery('inputs', 'kpi_secondary_region');
   });
 });
