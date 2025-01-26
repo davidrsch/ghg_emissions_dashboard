@@ -236,7 +236,7 @@ server <- function(id, inputs, sidebar_controls, countries, main_inputs) {
                   deframe(),
                 type = "bar"
               ) |>
-              config(displayModeBar = "always") |> 
+              config(displayModeBar = "always") |>
               layout(
                 showlegend = FALSE,
                 barmode = "stack",
@@ -313,7 +313,7 @@ server <- function(id, inputs, sidebar_controls, countries, main_inputs) {
                   deframe(),
                 type = "bar"
               ) |>
-              config(displayModeBar = "always") |> 
+              config(displayModeBar = "always") |>
               layout(
                 showlegend = FALSE,
                 barmode = "stack",

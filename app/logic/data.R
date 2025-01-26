@@ -1,5 +1,5 @@
 box::use(
-  dplyr[pull, select, rename],
+  dplyr[pull, rename, select],
   janitor[clean_names],
   readxl[read_excel],
   stringr[str_replace],

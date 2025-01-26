@@ -190,14 +190,11 @@ server <- function(id, inputs, sidebar_controls) {
               type = "scatter",
               mode = "lines+markers"
             ) |>
-              config(displayModeBar = "always") |> 
+              config(displayModeBar = "always") |>
               layout(
                 title = plot_title,
-                xaxis = list(
-                  title = "Date"
-                ),
-                yaxis = list(
-                  title = y_axis_label),
+                xaxis = list(title = "Date"),
+                yaxis = list(title = y_axis_label),
                 legend = list(title = list(text = "Countries")),
                 autosize = TRUE
               )

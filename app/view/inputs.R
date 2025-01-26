@@ -3,7 +3,7 @@ box::use(
   purrr[discard],
   shiny.fluent[ComboBox.shinyInput, Dropdown.shinyInput, updateComboBox.shinyInput],
   shiny.fluent[updateDropdown.shinyInput],
-  shiny[div, getDefaultReactiveDomain, moduleServer, NS, observeEvent, tags, HTML],
+  shiny[div, getDefaultReactiveDomain, moduleServer, NS, observeEvent],
   stringr[str_detect, str_replace, str_to_lower],
 )
 
@@ -44,7 +44,6 @@ ui <- function(id) {
       useComboBoxAsMenuWidth = TRUE,
       options = get_options(edgar_cc),
       calloutProps = list(
-        doNotLayer = TRUE, 
         styles = list(
           root = list(
             "max-height" = "300px!important"
@@ -128,7 +127,6 @@ ui <- function(id) {
       )
     )
   )
-  
 }
 
 #' @export
@@ -140,7 +138,7 @@ server <- function(id) {
     observeEvent(input$kpi_primary_region_query, {
       query <- input$kpi_primary_region_query
       all_options <- get_options(edgar_cc)
-      
+
       if (query == "") {
         query <- "GLB (GLOBAL)"
       }
@@ -153,7 +151,7 @@ server <- function(id) {
               str_replace("\\(", "") |>
               str_replace("\\)", "") |>
               str_to_lower()
-            text <- x$text |> 
+            text <- x$text |>
               str_replace("\\(", "") |>
               str_replace("\\)", "") |>
               str_to_lower()
@@ -162,14 +160,13 @@ server <- function(id) {
             } else {
               NULL
             }
-          }
-        )
+          })
         filtered_options <- filtered_options |>
           discard(is.null)
       } else {
         filtered_options <- all_options
       }
-      
+
       # Update the ComboBox with filtered options
       updateComboBox.shinyInput(
         session = getDefaultReactiveDomain(),
@@ -181,19 +178,19 @@ server <- function(id) {
     # Update combo box to include all options once one it's selected
     observeEvent(input$kpi_primary_region, {
       all_options <- get_options(edgar_cc)
-      
+
       updateComboBox.shinyInput(
         session = getDefaultReactiveDomain(),
         "kpi_primary_region",
         options = all_options
-       )
+      )
     })
 
     # Implement fuzy search in secondary region combobox
     observeEvent(input$kpi_secondary_region_query, {
       query <- input$kpi_secondary_region_query
       all_options <- get_options(edgar_cc)
-      
+
       if (query == "") {
         query <- "EU27 (Europe)"
       }
@@ -206,7 +203,7 @@ server <- function(id) {
               str_replace("\\(", "") |>
               str_replace("\\)", "") |>
               str_to_lower()
-            text <- x$text |> 
+            text <- x$text |>
               str_replace("\\(", "") |>
               str_replace("\\)", "") |>
               str_to_lower()
@@ -215,14 +212,13 @@ server <- function(id) {
             } else {
               NULL
             }
-          }
-        )
+          })
         filtered_options <- filtered_options |>
           discard(is.null)
       } else {
         filtered_options <- all_options
       }
-      
+
       # Update the ComboBox with filtered options
       updateComboBox.shinyInput(
         session = getDefaultReactiveDomain(),
@@ -234,12 +230,12 @@ server <- function(id) {
     # Update combo box to include all options once one it's selected
     observeEvent(input$kpi_secondary_region, {
       all_options <- get_options(edgar_cc)
-      
+
       updateComboBox.shinyInput(
         session = getDefaultReactiveDomain(),
         "kpi_secondary_region",
         options = all_options
-       )
+      )
     })
 
     observeEvent(input$arrange_regions, {
