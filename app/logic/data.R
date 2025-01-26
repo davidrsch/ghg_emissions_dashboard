@@ -1,5 +1,5 @@
 box::use(
-  dplyr[pull, select],
+  dplyr[pull, select, rename],
   janitor[clean_names],
   readxl[read_excel],
   stringr[str_replace],
@@ -55,8 +55,8 @@ ghg_gdplulucf_years <- ghg_per_gdp_by_country |>
 
 #' @export
 edgar_cc <- ghg_totals_by_country |>
-  select(edgar_country_code) |>
-  pull()
+  select(edgar_country_code, country) |>
+  rename(cc = edgar_country_code)
 
 #' @export
 sectors <- ghg_by_sector_and_country |>
