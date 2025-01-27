@@ -1,16 +1,16 @@
 box::use(
   purrr[discard],
   shiny.fluent[ComboBox.shinyInput, updateComboBox.shinyInput],
-  shiny[getDefaultReactiveDomain, moduleServer, NS, observeEvent],
+  shiny[getDefaultReactiveDomain, moduleServer, NS, observeEvent, req],
   stringr[str_detect, str_replace, str_split_i, str_to_lower],
 )
 
 #' @export
-ui <- function(id, cb_label, default_key, default_text, cb_options) {
+ui <- function(id, cb_label, default_key, default_text, cb_options, is_visible) {
   ns <- NS(id)
   ComboBox.shinyInput(
     ns("searchable_cb"),
-    label = cb_label,
+    label = ifelse(is_visible, cb_label, ""),
     value = list(
       key = default_key,
       text = default_text
@@ -18,6 +18,12 @@ ui <- function(id, cb_label, default_key, default_text, cb_options) {
     allowFreeform = TRUE,
     useComboBoxAsMenuWidth = TRUE,
     options = cb_options,
+    styles = list(
+      root = list(
+        "visibility" = ifelse(is_visible, "show", "hidden"),
+        "display" = ifelse(is_visible, "block", "none")
+      )
+    ),
     calloutProps = list(
       styles = list(
         root = list(
@@ -30,7 +36,7 @@ ui <- function(id, cb_label, default_key, default_text, cb_options) {
 }
 
 #' @export
-server <- function(id, default_text, cb_options) {
+server <- function(id, cb_label, default_text, cb_options, is_visible) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
     # Implement fuzy search in the combobox
@@ -70,7 +76,14 @@ server <- function(id, default_text, cb_options) {
       updateComboBox.shinyInput(
         session = getDefaultReactiveDomain(),
         "searchable_cb",
-        options = filtered_options
+        label = ifelse(is_visible(), cb_label, ""),
+        options = filtered_options,
+        styles = list(
+          root = list(
+            "visibility" = ifelse(is_visible(), "show", "hidden"),
+            "display" = ifelse(is_visible(), "block", "none")
+          )
+        )
       )
     })
 
@@ -81,6 +94,30 @@ server <- function(id, default_text, cb_options) {
       updateComboBox.shinyInput(
         session = getDefaultReactiveDomain(),
         "searchable_cb",
+        label = ifelse(is_visible(), cb_label, ""),
+        options = all_options,
+        styles = list(
+          root = list(
+            "visibility" = ifelse(is_visible(), "show", "hidden"),
+            "display" = ifelse(is_visible(), "block", "none")
+          )
+        )
+      )
+    })
+
+    observeEvent(is_visible(), {
+      req(input$searchable_cb)
+      all_options <- cb_options
+      updateComboBox.shinyInput(
+        label = ifelse(is_visible(), cb_label, ""),
+        session = getDefaultReactiveDomain(),
+        "searchable_cb",
+        styles = list(
+          root = list(
+            "visibility" = ifelse(is_visible(), "show", "hidden"),
+            "display" = ifelse(is_visible(), "block", "none")
+          )
+        ),
         options = all_options
       )
     })

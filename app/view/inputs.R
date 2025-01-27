@@ -2,7 +2,7 @@ box::use(
   dplyr[last],
   shiny.fluent[ComboBox.shinyInput, Dropdown.shinyInput],
   shiny.fluent[updateDropdown.shinyInput],
-  shiny[div, getDefaultReactiveDomain, moduleServer, NS, observeEvent],
+  shiny[div, getDefaultReactiveDomain, moduleServer, NS, observeEvent, reactiveVal],
 )
 
 box::use(
@@ -37,14 +37,16 @@ ui <- function(id) {
       cb_label = "Primary region",
       default_key = "GLB",
       default_text = "GLB (GLOBAL)",
-      cb_options = get_options(edgar_cc)
+      cb_options = get_options(edgar_cc),
+      is_visible = TRUE
     ),
     combobox_search$ui(
       ns("kpi_secondary_region"),
       cb_label = "Secondary region",
       default_key = "EU27",
-      default_text = "EU27 (Europe)",
-      cb_options = get_options(edgar_cc)
+      default_text = "EU27 (EU27)",
+      cb_options = get_options(edgar_cc),
+      is_visible = TRUE
     ),
     Dropdown.shinyInput(
       ns("arrange_regions"),
@@ -109,16 +111,22 @@ server <- function(id) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
 
+    combobox_visibility <- reactiveVal(TRUE)
+
     combobox_search$server(
       "kpi_primary_region",
+      cb_label = "Primary region",
       default_text = "GLB (GLOBAL)",
-      cb_options = get_options(edgar_cc)
+      cb_options = get_options(edgar_cc),
+      is_visible = combobox_visibility
     )
 
     combobox_search$server(
       "kpi_secondary_region",
-      default_text = "EU27 (Europe)",
-      cb_options = get_options(edgar_cc)
+      cb_label = "Secondary region",
+      default_text = "EU27 (EU27)",
+      cb_options = get_options(edgar_cc),
+      is_visible = combobox_visibility
     )
 
     observeEvent(input$arrange_regions, {
