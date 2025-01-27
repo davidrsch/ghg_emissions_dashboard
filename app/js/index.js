@@ -17,7 +17,7 @@ function ComboBoxquery(module, cbIdentity) {
       const inputValue = document.querySelector(
         `[data-test="${cbIdentity}"] div input`,
       ).value;
-
+      console.log(`test value: ${inputValue}`)
       // Select the combobox container and button elements
       const dropdownContainer = document.querySelector(
         `[data-test="${cbIdentity}"] div`,
@@ -44,5 +44,7 @@ $(() => {
     ComboBoxquery('inputs', 'kpi_primary_region');
     ComboBoxquery('inputs', 'kpi_secondary_region');
     ComboBoxquery('compare', 'select_region');
+    ComboBoxquery('compare', 'first_region-region_info');
+    ComboBoxquery('compare', 'second_region-region_info');
   });
 });
