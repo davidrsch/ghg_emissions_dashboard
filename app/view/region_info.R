@@ -53,8 +53,7 @@ server <- function(
   text_year,
   complementary_year,
   visible_year
-) 
-{
+) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
 

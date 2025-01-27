@@ -17,7 +17,7 @@ function ComboBoxquery(module, cbIdentity) {
       const inputValue = document.querySelector(
         `[data-test="${cbIdentity}"] div input`,
       ).value;
-      console.log(`test value: ${inputValue}`)
+
       // Select the combobox container and button elements
       const dropdownContainer = document.querySelector(
         `[data-test="${cbIdentity}"] div`,

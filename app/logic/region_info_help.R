@@ -1,5 +1,5 @@
 box::use(
-  dplyr[arrange, desc, filter, group_by, join_by, last, left_join, mutate],
+  dplyr[arrange, desc, filter, group_by, join_by, left_join, mutate],
   dplyr[rename, select, summarise, ungroup],
   plotly[config, layout, plot_ly],
   shiny.fluent[Stack, Text],
@@ -10,7 +10,7 @@ box::use(
 
 box::use(
   app/logic/data[ghg_by_sector_and_country, ghg_per_capita_by_country, ghg_per_gdp_by_country],
-  app/logic/data[ghg_totals_by_country, ghg_tspc_years],
+  app/logic/data[ghg_totals_by_country],
   app/logic/key_metrics_help[get_value_of_country_in_year],
 )
 
@@ -108,20 +108,20 @@ get_region_plot <- function(type, country_code, complementary_region, year, comp
   secondary_data <- get_plot_data(type, complementary_region, complementary_year)
   if (type == "sector") {
     primary_data <- primary_data |>
-    left_join(
-      secondary_data |>
-        rename(emission_2 = emission) |>
-        select(-country),
-      by = join_by(sector)
-    )
+      left_join(
+        secondary_data |>
+          rename(emission_2 = emission) |>
+          select(-country),
+        by = join_by(sector)
+      )
   } else if (type == "substance") {
     primary_data <- primary_data |>
-    left_join(
-      secondary_data |>
-        rename(emission_2 = emission) |>
-        select(-country),
-      by = join_by(substance)
-    )
+      left_join(
+        secondary_data |>
+          rename(emission_2 = emission) |>
+          select(-country),
+        by = join_by(substance)
+      )
   }
   primary_data <- primary_data |>
     mutate(
