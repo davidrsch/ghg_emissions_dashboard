@@ -5,6 +5,7 @@ box::use(
 )
 
 box::use(
+  app/view/compare,
   app/view/inputs,
   app/view/key_metrics,
   app/view/sector_substance,
@@ -39,6 +40,12 @@ ui <- function(id) {
           ),
           main_bgc = "#DADAD9"
         )
+      ),
+      PivotItem(
+        headerText = "Compare",
+        compare$ui(
+          id = ns("compare")
+        )
       )
     ),
     style = "background-color:#ffff"
@@ -54,5 +61,6 @@ server <- function(id) {
     key_metrics$server("keymetrics", inputs_to)
     countries <- top_regions$server("regions_tp", inputs_to, sidebar_controls)
     sector_substance$server("sector_metrics", inputs_to, sidebar_controls, countries, input)
+    compare$server("compare")
   })
 }

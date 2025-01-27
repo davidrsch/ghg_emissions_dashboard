@@ -43,5 +43,6 @@ $(() => {
     // Use delegated event binding
     ComboBoxquery('inputs', 'kpi_primary_region');
     ComboBoxquery('inputs', 'kpi_secondary_region');
+    ComboBoxquery('compare', 'select_region');
   });
 });
