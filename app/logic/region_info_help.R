@@ -1,6 +1,6 @@
 box::use(
-  dplyr[arrange, desc, filter, group_by, last, left_join, mutate, rename],
-  dplyr[select, summarise, ungroup],
+  dplyr[arrange, desc, filter, group_by, join_by, last, left_join, mutate],
+  dplyr[rename, select, summarise, ungroup],
   plotly[config, layout, plot_ly],
   shiny.fluent[Stack, Text],
   stats[reorder],
@@ -15,7 +15,7 @@ box::use(
 )
 
 #' @export
-get_region_kpi_ui <- function(data, country_code, complementary_region) {
+get_region_kpi_ui <- function(data, country_code, complementary_region, year, complementary_year) {
   if (data == "ghg_totals") {
     description <- "Total GHG Emissions in Mt: "
     data_to_use <- ghg_totals_by_country
@@ -32,13 +32,13 @@ get_region_kpi_ui <- function(data, country_code, complementary_region) {
   value <- get_value_of_country_in_year(
     data_to_use,
     country_code,
-    last(ghg_tspc_years)
+    year
   ) |>
     round(x = _, digits = 2)
   complementary_value <- get_value_of_country_in_year(
     data_to_use,
     complementary_region,
-    last(ghg_tspc_years)
+    complementary_year
   ) |>
     round(x = _, digits = 2)
 
@@ -74,7 +74,7 @@ get_region_kpi_ui <- function(data, country_code, complementary_region) {
 }
 
 #' @export
-get_plot_data <- function(type, code) {
+get_plot_data <- function(type, code, year) {
   data <- ghg_by_sector_and_country |>
     filter(edgar_country_code == code)
   if (type == "sector") {
@@ -87,7 +87,7 @@ get_plot_data <- function(type, code) {
 
   data <- data |>
     summarise(
-      emission = sum(.data[[paste0("x", last(ghg_tspc_years))]], na.rm = TRUE)
+      emission = sum(.data[[paste0("x", year)]], na.rm = TRUE)
     ) |>
     ungroup()
 
@@ -102,16 +102,28 @@ get_plot_data <- function(type, code) {
 }
 
 #' @export
-get_region_plot <- function(type, country_code, complementary_region) {
+get_region_plot <- function(type, country_code, complementary_region, year, complementary_year) {
 
-  primary_data <- get_plot_data(type, country_code)
-  secondary_data <- get_plot_data(type, complementary_region)
-  primary_data <- primary_data |>
+  primary_data <- get_plot_data(type, country_code, year)
+  secondary_data <- get_plot_data(type, complementary_region, complementary_year)
+  if (type == "sector") {
+    primary_data <- primary_data |>
     left_join(
       secondary_data |>
         rename(emission_2 = emission) |>
-        select(-country)
-    ) |>
+        select(-country),
+      by = join_by(sector)
+    )
+  } else if (type == "substance") {
+    primary_data <- primary_data |>
+    left_join(
+      secondary_data |>
+        rename(emission_2 = emission) |>
+        select(-country),
+      by = join_by(substance)
+    )
+  }
+  primary_data <- primary_data |>
     mutate(
       color = emission - emission_2,
       color = ifelse(
@@ -166,7 +178,7 @@ get_region_plot <- function(type, country_code, complementary_region) {
           " contribution of ",
           country_code,
           " in ",
-          last(ghg_tspc_years),
+          year,
           "</span>"
         )
       ),

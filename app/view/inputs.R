@@ -112,9 +112,11 @@ server <- function(id) {
     ns <- session$ns
 
     combobox_visibility <- reactiveVal(TRUE)
-
+    combobox_pdft_value <- reactiveVal(NULL)
+    combobox_sdft_value <- reactiveVal(NULL)
     combobox_search$server(
       "kpi_primary_region",
+      value = combobox_pdft_value,
       cb_label = "Primary region",
       default_text = "GLB (GLOBAL)",
       cb_options = get_options(edgar_cc),
@@ -123,6 +125,7 @@ server <- function(id) {
 
     combobox_search$server(
       "kpi_secondary_region",
+      value = combobox_sdft_value,
       cb_label = "Secondary region",
       default_text = "EU27 (EU27)",
       cb_options = get_options(edgar_cc),

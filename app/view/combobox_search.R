@@ -2,7 +2,7 @@ box::use(
   purrr[discard],
   shiny.fluent[ComboBox.shinyInput, updateComboBox.shinyInput],
   shiny[getDefaultReactiveDomain, moduleServer, NS, observeEvent, req],
-  stringr[str_detect, str_replace, str_split_i, str_to_lower],
+  stringr[str_count, str_detect, str_replace, str_split_i, str_split_fixed, str_to_lower],
 )
 
 #' @export
@@ -31,12 +31,12 @@ ui <- function(id, cb_label, default_key, default_text, cb_options, is_visible) 
         )
       )
     ),
-    `data-test` = str_split_i(id, "-", -1)
+    `data-test` = str_split_fixed(id, "-", 3)[3]
   )
 }
 
 #' @export
-server <- function(id, cb_label, default_text, cb_options, is_visible) {
+server <- function(id, value, cb_label, default_text, cb_options, is_visible) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
     # Implement fuzy search in the combobox
@@ -89,18 +89,10 @@ server <- function(id, cb_label, default_text, cb_options, is_visible) {
 
     # # Update combo box to include all options once one it's selected
     observeEvent(input$searchable_cb, {
-      all_options <- cb_options
-
-      updateComboBox.shinyInput(
-        session = getDefaultReactiveDomain(),
-        "searchable_cb",
-        label = ifelse(is_visible(), cb_label, ""),
-        options = all_options,
-        styles = list(
-          root = list(
-            "visibility" = ifelse(is_visible(), "show", "hidden"),
-            "display" = ifelse(is_visible(), "block", "none")
-          )
+      value(
+        list(
+          key = input$searchable_cb$key,
+          text = input$searchable_cb$text
         )
       )
     })
@@ -120,6 +112,29 @@ server <- function(id, cb_label, default_text, cb_options, is_visible) {
         ),
         options = all_options
       )
+    })
+
+    observeEvent(value(), {
+      req(input$searchable_cb)
+      if (!is.null(value())) {
+        all_options <- cb_options
+        updateComboBox.shinyInput(
+          label = ifelse(is_visible(), cb_label, ""),
+          session = getDefaultReactiveDomain(),
+          value = list(
+            key = value()$key,
+            text = value()$text
+          ),
+          "searchable_cb",
+          styles = list(
+            root = list(
+              "visibility" = ifelse(is_visible(), "show", "hidden"),
+              "display" = ifelse(is_visible(), "block", "none")
+            )
+          ),
+          options = all_options
+        )
+      }
     })
 
   })

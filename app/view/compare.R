@@ -1,10 +1,11 @@
 box::use(
+  dplyr[last],
   shiny.fluent[Dropdown.shinyInput, Stack],
   shiny[div, moduleServer, NS, observeEvent, reactiveVal],
 )
 
 box::use(
-  app/logic/data[edgar_cc],
+  app/logic/data[edgar_cc, ghg_tspc_years],
   app/logic/get_options[get_options],
   app/view/combobox_search,
   app/view/region_info,
@@ -45,8 +46,8 @@ ui <- function(id) {
           combobox_search$ui(
             ns("select_region"),
             cb_label = "Region",
-            default_key = "GLB",
-            default_text = "GLB (GLOBAL)",
+            default_key = "EU27",
+            default_text = "EU27 (EU27)",
             cb_options = get_options(edgar_cc),
             is_visible = FALSE
           )
@@ -59,13 +60,21 @@ ui <- function(id) {
           gap = 10,
           region_info$ui(
             ns("first_region"),
-            key = "GLB",
-            text = "GLB (GLOBAL)"
+            key_region = "GLB",
+            text_region = "GLB (GLOBAL)",
+            visible_region = TRUE,
+            key_year = last(ghg_tspc_years),
+            text_year = last(ghg_tspc_years),
+            visible_year = FALSE
           ),
           region_info$ui(
             ns("second_region"),
-            key = "EU27",
-            text = "EU27 (EU27)"
+            key_region = "EU27",
+            text_region = "EU27 (EU27)",
+            visible_region = TRUE,
+            key_year = last(ghg_tspc_years),
+            text_year = last(ghg_tspc_years),
+            visible_year = FALSE
           )
         ),
         style = "margin-top: 20px; padding: 20px; background-color: #DADAD9;"
@@ -82,8 +91,27 @@ server <- function(id) {
 
     ns <- session$ns
     combobox_region_visibility <- reactiveVal(FALSE)
+    combobox_regions_visibility <- reactiveVal(TRUE)
+    combobox_years_visibility <- reactiveVal(FALSE)
+    region_default_value <- reactiveVal(NULL)
+    first_region_default_value <- reactiveVal(
+      list(
+        key = "GLB",
+        text = "GLB (GLOBAL)"
+      )
+    )
+    second_region_default_value <- reactiveVal(
+      list(
+        key = "EU27",
+        text = "EU27 (EU27)"
+      )
+    )
+    first_year_default_value <- reactiveVal(NULL)
+    second_year_default_value <- reactiveVal(NULL)
+
     combobox_search$server(
       "select_region",
+      value = region_default_value,
       cb_label = "Region",
       default_text = "GLB (GLOBAL)",
       cb_options = get_options(edgar_cc),
@@ -93,20 +121,95 @@ server <- function(id) {
     observeEvent(input$between, {
       if (input$between == "Region") {
         combobox_region_visibility(FALSE)
+        combobox_regions_visibility(TRUE)
+        combobox_years_visibility(FALSE)
+        first_region_default_value(
+          list(
+            key = "GLB",
+            text = "GLB (GLOBAL)"
+          )
+        )
+        second_region_default_value(
+          list(
+            key = "EU27",
+            text = "EU27 (EU27)"
+          )
+        )
+        first_year_default_value(
+          list(
+            key = last(ghg_tspc_years),
+            text = last(ghg_tspc_years)
+          )
+        )
+        second_year_default_value(
+          list(
+            key = last(ghg_tspc_years),
+            text = last(ghg_tspc_years)
+          )
+        )
       } else {
         combobox_region_visibility(TRUE)
+        combobox_regions_visibility(FALSE)
+        combobox_years_visibility(TRUE)
+        region_default_value(
+          list(
+            key = "GLB",
+            text = "GLB (GLOBAL)"
+          )
+        )
+        first_year_default_value(
+          list(
+            key = last(ghg_tspc_years),
+            text = last(ghg_tspc_years)
+          )
+        )
+        second_year_default_value(
+          list(
+            key = (as.numeric(last(ghg_tspc_years)) - 1),
+            text = (as.numeric(last(ghg_tspc_years)) - 1)
+          )
+        )
+      }
+    })
+
+    observeEvent(input$`select_region-searchable_cb`, {
+      if (combobox_region_visibility()) {
+        first_region_default_value(
+          list(
+            key = input$`select_region-searchable_cb`$key,
+            text = input$`select_region-searchable_cb`$text
+          )
+        )
+        second_region_default_value(
+          list(
+            key = input$`select_region-searchable_cb`$key,
+            text = input$`select_region-searchable_cb`$text
+          )
+        )
       }
     })
 
     first_region_key <- region_info$server(
       "first_region",
-      text = "GLB (GLOBAL)",
-      complementary_region = second_region_key
+      value_region = first_region_default_value,
+      text_region = "GLB (GLOBAL)",
+      complementary_region = second_region_key$region,
+      visible_region = combobox_regions_visibility,
+      value_year = first_year_default_value,
+      text_year = last(ghg_tspc_years),
+      complementary_year = second_region_key$year,
+      visible_year = combobox_years_visibility
     )
     second_region_key <- region_info$server(
       "second_region",
-      text = "EU27 (EU27)",
-      complementary_region = first_region_key
+      value_region = second_region_default_value,
+      text_region = "EU27 (EU27)",
+      complementary_region = first_region_key$region,
+      visible_region = combobox_regions_visibility,
+      value_year = second_year_default_value,
+      text_year = last(ghg_tspc_years),
+      complementary_year = first_region_key$year,
+      visible_year = combobox_years_visibility
     )
 
   })
