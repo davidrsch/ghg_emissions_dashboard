@@ -193,6 +193,7 @@ server <- function(id, inputs, sidebar_controls) {
               config(displayModeBar = "always") |>
               layout(
                 title = plot_title,
+                margin = list(t = 80),
                 xaxis = list(title = "Date"),
                 yaxis = list(title = y_axis_label),
                 legend = list(title = list(text = "Countries")),
