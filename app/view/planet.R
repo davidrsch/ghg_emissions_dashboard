@@ -1,7 +1,7 @@
 box::use(
   dplyr[distinct, filter, pull, rename, select],
-  plotly[layout, plot_ly, plotlyOutput, renderPlotly],
-  shiny.fluent[Dropdown.shinyInput, updateDropdown.shinyInput],
+  plotly[config, layout, plot_ly, plotlyOutput, renderPlotly],
+  shiny.fluent[Dropdown.shinyInput, Toggle.shinyInput, updateDropdown.shinyInput],
   shiny[div, getDefaultReactiveDomain, moduleServer, NS, observeEvent, req],
   stats[na.omit],
 )
@@ -10,7 +10,7 @@ box::use(
   app/logic/data[continents,  ghg_capita_globe_map, ghg_gdp_globe_map, ghg_sector_globe_map],
   app/logic/data[ghg_totals_globe_map, globe_cc],
   app/logic/get_options[get_options],
-  app/logic/top_regions_help[get_countries_he],
+  app/logic/top_regions_help[get_countries_he, get_plot_title],
   app/view/emissions_by,
 )
 
@@ -57,15 +57,18 @@ ui <- function(id) {
           )
         )
       ),
-      class = "ms-Grid-col ms-sm1 ms-md2"
+      class = "ms-Grid-col ms-sm1 ms-md2",
+      style = "padding-left: 20px;"
     ),
     div(
       plotlyOutput(ns("map"), height = "50rem"),
       class = "ms-Grid-col ms-sm10 ms-md8"
     ),
     div(
+      Toggle.shinyInput(label = "3D Globe", ns("is_3d_globe"), value = TRUE),
       emissions_by$ui(ns("emissions_by")),
-      class = "ms-Grid-col ms-sm1 ms-md2"
+      class = "ms-Grid-col ms-sm1 ms-md2",
+      style = "padding-right: 20px;"
     )
   )
 }
@@ -91,6 +94,7 @@ server <- function(id) {
 
     output$map <- renderPlotly({
       req(input$selected_countries)
+      
       # Extract selected keys properly
       selected_countries <- globe_cc |>
         filter(cc %in% input$selected_countries) |>
@@ -98,6 +102,7 @@ server <- function(id) {
         pull() |>
         na.omit()
 
+      # Get the plot data
       filtered_data <- get_countries_he(
         input$`emissions_by-emissions_by`,
         selected_countries,
@@ -113,6 +118,15 @@ server <- function(id) {
           cc = country,
           value = emission
         )
+      
+      plot_title <- get_plot_title(
+        input$`emissions_by-emissions_by`,
+        input$`emissions_by-emissions_by_sectors`,
+        input$`emissions_by-emissions_by_substance`
+      )
+      
+      # Get the plot type
+      globe_type <- ifelse(input$is_3d_globe, "orthographic", "natural earth")
 
       # Create Plotly map
       plot_ly(
@@ -124,11 +138,14 @@ server <- function(id) {
         colorscale = "Redor",
         reversescale = FALSE
       ) |>
+        config(displayModeBar = "always") |>
         layout(
+          title = paste0(plot_title, ", year 2023"),
+          margin = list(t = 80),
           geo = list(
             showframe = TRUE,
             showcoastlines = TRUE,
-            projection = list(type = "orthographic")
+            projection = list(type = globe_type)
           )
         )
     })
