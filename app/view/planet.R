@@ -94,7 +94,7 @@ server <- function(id) {
 
     output$map <- renderPlotly({
       req(input$selected_countries)
-      
+
       # Extract selected keys properly
       selected_countries <- globe_cc |>
         filter(cc %in% input$selected_countries) |>
@@ -118,13 +118,13 @@ server <- function(id) {
           cc = country,
           value = emission
         )
-      
+
       plot_title <- get_plot_title(
         input$`emissions_by-emissions_by`,
         input$`emissions_by-emissions_by_sectors`,
         input$`emissions_by-emissions_by_substance`
       )
-      
+
       # Get the plot type
       globe_type <- ifelse(input$is_3d_globe, "orthographic", "natural earth")
 
