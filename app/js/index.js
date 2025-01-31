@@ -10,31 +10,30 @@
  */
 function ComboBoxquery(module, cbIdentity) {
   // Add an event listener for input events on the target combobox's input field
-  $(document).on(
-    'input',
-    `[data-test="${cbIdentity}"] div input`,
-    () => {
-      const inputValue = document.querySelector(
-        `[data-test="${cbIdentity}"] div input`,
-      ).value;
+  $(document).on('input', `[data-test="${cbIdentity}"] div input`, () => {
+    const inputValue = document.querySelector(
+      `[data-test="${cbIdentity}"] div input`,
+    ).value;
 
-      // Select the combobox container and button elements
-      const dropdownContainer = document.querySelector(
-        `[data-test="${cbIdentity}"] div`,
-      );
-      const dropdownButton = document.querySelector(
-        `[data-test="${cbIdentity}"] div button`,
-      );
+    // Select the combobox container and button elements
+    const dropdownContainer = document.querySelector(
+      `[data-test="${cbIdentity}"] div`,
+    );
+    const dropdownButton = document.querySelector(
+      `[data-test="${cbIdentity}"] div button`,
+    );
 
-      // Check if the dropdown is open by inspecting the 'is-open' class
-      if (!dropdownContainer.classList.contains('is-open')) {
-        dropdownButton.click();
-      }
+    // Check if the dropdown is open by inspecting the 'is-open' class
+    if (!dropdownContainer.classList.contains('is-open')) {
+      dropdownButton.click();
+    }
 
-      // Update the corresponding Shiny input value with the current input
-      Shiny.setInputValue(`app-${module}-${cbIdentity}-searchable_cb_query`, inputValue);
-    },
-  );
+    // Update the corresponding Shiny input value with the current input
+    Shiny.setInputValue(
+      `app-${module}-${cbIdentity}-searchable_cb_query`,
+      inputValue,
+    );
+  });
 }
 
 $(() => {
