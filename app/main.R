@@ -8,6 +8,7 @@ box::use(
   app/view/compare,
   app/view/inputs,
   app/view/key_metrics,
+  app/view/planet,
   app/view/sector_substance,
   app/view/sidebar,
   app/view/top_regions,
@@ -43,9 +44,11 @@ ui <- function(id) {
       ),
       PivotItem(
         headerText = "Compare",
-        compare$ui(
-          id = ns("compare")
-        )
+        compare$ui(ns("compare"))
+      ),
+      PivotItem(
+        headerText = "Explore the Planet",
+        planet$ui(ns("planet"))
       )
     ),
     style = "background-color:#ffff"
@@ -62,5 +65,6 @@ server <- function(id) {
     countries <- top_regions$server("regions_tp", inputs_to, sidebar_controls)
     sector_substance$server("sector_metrics", inputs_to, sidebar_controls, countries, input)
     compare$server("compare")
+    planet$server("planet")
   })
 }
