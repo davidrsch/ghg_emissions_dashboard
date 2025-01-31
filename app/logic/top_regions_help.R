@@ -92,10 +92,10 @@ get_country_he <- function(
   actual_country,
   selected_sector,
   selected_substance,
-  total_data = ghg_totals_by_country,
-  capita_data = ghg_per_capita_by_country,
-  gpd_data = ghg_per_gdp_by_country,
-  sector_substance_data = ghg_by_sector_and_country
+  total_data,
+  capita_data,
+  gpd_data,
+  sector_substance_data
 ) {
   if (arrange_regions == "Total emissions") {
     data_to <- total_data |>
@@ -153,7 +153,11 @@ get_countries_he <- function(
   arrange_regions,
   countries,
   selected_sector,
-  selected_substance
+  selected_substance,
+  total_data,
+  capita_data,
+  gpd_data,
+  sector_substance_data
 ) {
   data <- countries |>
     lapply(function(x) {
@@ -161,7 +165,11 @@ get_countries_he <- function(
         arrange_regions,
         x,
         selected_sector,
-        selected_substance
+        selected_substance,
+        total_data,
+        capita_data,
+        gpd_data,
+        sector_substance_data
       )
     }) |>
     bind_rows()

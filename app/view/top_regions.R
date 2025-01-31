@@ -9,6 +9,8 @@ box::use(
 )
 
 box::use(
+  app/logic/data[ghg_by_sector_and_country, ghg_per_capita_by_country, ghg_per_gdp_by_country],
+  app/logic/data[ghg_totals_by_country],
   app/logic/top_regions_help[get_countries_he, get_plot_title, get_regions_emissions],
   app/logic/top_regions_help[get_regions_emissions_label],
 )
@@ -164,7 +166,11 @@ server <- function(id, inputs, sidebar_controls) {
               inputs$`emissions_by-emissions_by`,
               countries(),
               inputs$`emissions_by-emissions_by_sectors`,
-              inputs$`emissions_by-emissions_by_substance`
+              inputs$`emissions_by-emissions_by_substance`,
+              total_data = ghg_totals_by_country,
+              capita_data = ghg_per_capita_by_country,
+              gpd_data = ghg_per_gdp_by_country,
+              sector_substance_data = ghg_by_sector_and_country
             )
             unique_countries <- length(countries())
             colors <- colorRampPalette(RColorBrewer::brewer.pal(8, "Set2"))(unique_countries)
