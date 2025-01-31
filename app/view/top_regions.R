@@ -53,18 +53,18 @@ server <- function(id, inputs, sidebar_controls) {
 
     observeEvent(
       c(
-        inputs$arrange_regions,
+        inputs$`emissions_by-emissions_by`,
         inputs$kpi_years$key,
-        inputs$arrange_regions_sectors,
-        inputs$arrange_regions_substance
+        inputs$`emissions_by-emissions_by_sectors`,
+        inputs$`emissions_by-emissions_by_substance`
       ),
       {
         top_data(
           get_regions_emissions(
-            inputs$arrange_regions,
+            inputs$`emissions_by-emissions_by`,
             inputs$kpi_years$key,
-            inputs$arrange_regions_sectors,
-            inputs$arrange_regions_substance
+            inputs$`emissions_by-emissions_by_sectors`,
+            inputs$`emissions_by-emissions_by_substance`
           )
         )
       }
@@ -115,9 +115,9 @@ server <- function(id, inputs, sidebar_controls) {
     output$tpt_label <- renderUI({
       Text(
         get_regions_emissions_label(
-          inputs$arrange_regions,
-          inputs$arrange_regions_sectors,
-          inputs$arrange_regions_substance
+          inputs$`emissions_by-emissions_by`,
+          inputs$`emissions_by-emissions_by_sectors`,
+          inputs$`emissions_by-emissions_by_substance`
         )
       )
     })
@@ -136,9 +136,9 @@ server <- function(id, inputs, sidebar_controls) {
       c(
         sidebar_controls$hide_sidebar_left,
         sidebar_controls$show_sidebar_right,
-        inputs$arrange_regions,
-        inputs$arrange_regions_sectors,
-        inputs$arrange_regions_substance
+        inputs$`emissions_by-emissions_by`,
+        inputs$`emissions_by-emissions_by_sectors`,
+        inputs$`emissions_by-emissions_by_substance`
       ),
       {
         output$top_emissions_chart <- renderPlotly({
@@ -161,21 +161,21 @@ server <- function(id, inputs, sidebar_controls) {
               )
           } else {
             plot_data <- get_countries_he(
-              inputs$arrange_regions,
+              inputs$`emissions_by-emissions_by`,
               countries(),
-              inputs$arrange_regions_sectors,
-              inputs$arrange_regions_substance
+              inputs$`emissions_by-emissions_by_sectors`,
+              inputs$`emissions_by-emissions_by_substance`
             )
             unique_countries <- length(countries())
             colors <- colorRampPalette(RColorBrewer::brewer.pal(8, "Set2"))(unique_countries)
             plot_title <- get_plot_title(
-              inputs$arrange_regions,
-              inputs$arrange_regions_sectors,
-              inputs$arrange_regions_substance
+              inputs$`emissions_by-emissions_by`,
+              inputs$`emissions_by-emissions_by_sectors`,
+              inputs$`emissions_by-emissions_by_substance`
             )
             y_axis_label <- ifelse(
               is.element(
-                inputs$arrange_regions,
+                inputs$`emissions_by-emissions_by`,
                 c("Total emissions", "Sector", "Substance", "Sector & Substance")
               ),
               "Emissions in Mt",

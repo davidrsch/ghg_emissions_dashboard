@@ -1,20 +1,22 @@
 box::use(
   dplyr[last],
-  shiny.fluent[ComboBox.shinyInput, Dropdown.shinyInput],
-  shiny.fluent[updateDropdown.shinyInput],
-  shiny[div, getDefaultReactiveDomain, moduleServer, NS, observeEvent, reactiveVal],
+  shiny.fluent[ComboBox.shinyInput, Text],
+  shiny[div, hr, moduleServer, NS, reactiveVal],
 )
 
 box::use(
-  app/logic/data[edgar_cc, ghg_tspc_years, sectors, substances],
+  app/logic/data[edgar_cc, ghg_tspc_years],
   app/logic/get_options[get_options],
   app/view/combobox_search,
+  app/view/emissions_by,
 )
 
 #' @export
 ui <- function(id) {
   ns <- NS(id)
   div(
+    Text("KPIs", variant = "large"),
+    hr(),
     ComboBox.shinyInput(
       ns("kpi_years"),
       label = "Year",
@@ -48,60 +50,11 @@ ui <- function(id) {
       cb_options = get_options(edgar_cc),
       is_visible = TRUE
     ),
-    Dropdown.shinyInput(
-      ns("arrange_regions"),
-      label = "Regions by:",
-      value = "Total emissions",
-      options = get_options(
-        c("Total emissions", "Per capita", "GDP", "Sector", "Substance", "Sector & Substance")
-      ),
-      calloutProps = list(
-        styles = list(
-          root = list(
-            "max-height" = "300px!important"
-          )
-        )
-      )
-    ),
-    Dropdown.shinyInput(
-      ns("arrange_regions_sectors"),
-      label = "Sector:",
-      value = "Power Industry",
-      options = get_options(sectors),
-      styles = list(
-        root = list(
-          "visibility" = "hidden",
-          "display" = "none",
-          "font-weight" = "400"
-        )
-      ),
-      calloutProps = list(
-        styles = list(
-          root = list(
-            "max-height" = "300px!important"
-          )
-        )
-      )
-    ),
-    Dropdown.shinyInput(
-      ns("arrange_regions_substance"),
-      label = "Substance:",
-      value = "CO2",
-      options = get_options(substances),
-      styles = list(
-        root = list(
-          "visibility" = "hidden",
-          "display" = "none",
-          "font-weight" = "400"
-        )
-      ),
-      calloutProps = list(
-        styles = list(
-          root = list(
-            "max-height" = "300px!important"
-          )
-        )
-      )
+    div(style = "height: 10px;"),
+    Text("Top emissors", variant = "large"),
+    hr(),
+    emissions_by$ui(
+      ns("emissions_by")
     )
   )
 }
@@ -132,90 +85,7 @@ server <- function(id) {
       is_visible = combobox_visibility
     )
 
-    observeEvent(input$arrange_regions, {
-      if (is.element(input$arrange_regions, c("Sector", "Sector & Substance"))) {
-        updateDropdown.shinyInput(
-          session = getDefaultReactiveDomain(),
-          "arrange_regions_sectors",
-          styles = list(
-            root = list(
-              "visibility" = "show",
-              "display" = "block",
-              "label" = list(
-                "font-weight" = "400"
-              )
-            )
-          ),
-          calloutProps = list(
-            styles = list(
-              root = list(
-                "max-height" = "300px!important"
-              )
-            )
-          )
-        )
-      } else {
-        updateDropdown.shinyInput(
-          session = getDefaultReactiveDomain(),
-          "arrange_regions_sectors",
-          styles = list(
-            root = list(
-              "visibility" = "hidden",
-              "display" = "none"
-            )
-          ),
-          calloutProps = list(
-            styles = list(
-              root = list(
-                "max-height" = "300px!important"
-              )
-            )
-          )
-        )
-      }
-
-      if (is.element(input$arrange_regions, c("Substance", "Sector & Substance"))) {
-        updateDropdown.shinyInput(
-          session = getDefaultReactiveDomain(),
-          "arrange_regions_substance",
-          styles = list(
-            root = list(
-              "visibility" = "show",
-              "display" = "block",
-              "label" = list(
-                "font-weight" = "400"
-              )
-            )
-          ),
-          calloutProps = list(
-            styles = list(
-              root = list(
-                "max-height" = "300px!important"
-              )
-            )
-          )
-        )
-      } else {
-        updateDropdown.shinyInput(
-          session = getDefaultReactiveDomain(),
-          "arrange_regions_substance",
-          styles = list(
-            root = list(
-              "visibility" = "hidden",
-              "display" = "none"
-            )
-          ),
-          calloutProps = list(
-            styles = list(
-              root = list(
-                "max-height" = "300px!important"
-              )
-            )
-          )
-        )
-      }
-
-    })
+    emissions_by$server("emissions_by")
 
     return(input)
   })
