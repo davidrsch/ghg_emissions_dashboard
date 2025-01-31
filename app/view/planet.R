@@ -45,7 +45,7 @@ ui <- function(id) {
       Dropdown.shinyInput(
         ns("selected_countries"),
         label = "Country",
-        value = "",
+        value = globe_cc$cc,
         options = globe_cc |>
           get_options(),
         multiSelect = TRUE,
