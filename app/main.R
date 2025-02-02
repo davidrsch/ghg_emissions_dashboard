@@ -5,14 +5,14 @@ box::use(
 )
 
 box::use(
-  app/view/compare,
-  app/view/inputs,
-  app/view/key_metrics,
-  app/view/planet,
-  app/view/sector_substance,
-  app/view/sidebar,
-  app/view/top_regions,
-  app/view/wellcome,
+  app/view/compare/compare,
+  app/view/overview/inputs,
+  app/view/overview/key_metrics,
+  app/view/overview/sector_substance,
+  app/view/overview/top_regions,
+  app/view/planet/planet,
+  app/view/tool_modules/sidebar,
+  app/view/wellcome/wellcome,
 )
 
 #' @export

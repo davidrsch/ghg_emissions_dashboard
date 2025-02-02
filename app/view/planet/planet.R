@@ -11,7 +11,7 @@ box::use(
   app/logic/data[ghg_totals_globe_map, globe_cc],
   app/logic/get_options[get_options],
   app/logic/top_regions_help[get_countries_he, get_plot_title],
-  app/view/emissions_by,
+  app/view/tool_modules/emissions_by,
 )
 
 #' @export

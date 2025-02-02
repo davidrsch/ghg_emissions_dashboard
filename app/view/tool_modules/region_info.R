@@ -7,7 +7,7 @@ box::use(
   app/logic/data[edgar_cc, ghg_tspc_years],
   app/logic/get_options[get_options],
   app/logic/region_info_help[get_region_kpi_ui, get_region_plot],
-  app/view/combobox_search,
+  app/view/tool_modules/combobox_search,
 )
 
 #' @export

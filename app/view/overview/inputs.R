@@ -7,8 +7,8 @@ box::use(
 box::use(
   app/logic/data[edgar_cc, ghg_tspc_years],
   app/logic/get_options[get_options],
-  app/view/combobox_search,
-  app/view/emissions_by,
+  app/view/tool_modules/combobox_search,
+  app/view/tool_modules/emissions_by,
 )
 
 #' @export
