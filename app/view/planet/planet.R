@@ -1,14 +1,15 @@
 box::use(
   dplyr[distinct, filter, pull, rename, select],
   plotly[config, layout, plot_ly, plotlyOutput, renderPlotly],
-  shiny.fluent[Dropdown.shinyInput, Toggle.shinyInput, updateDropdown.shinyInput],
+  shiny.fluent[Dropdown.shinyInput, Slider.shinyInput, Toggle.shinyInput],
+  shiny.fluent[updateDropdown.shinyInput],
   shiny[div, getDefaultReactiveDomain, moduleServer, NS, observeEvent, req],
   stats[na.omit],
 )
 
 box::use(
   app/logic/data[continents,  ghg_capita_globe_map, ghg_gdp_globe_map, ghg_sector_globe_map],
-  app/logic/data[ghg_totals_globe_map, globe_cc],
+  app/logic/data[ghg_totals_globe_map, ghg_tspc_years, globe_cc],
   app/logic/get_options[get_options],
   app/logic/top_regions_help[get_countries_he, get_plot_title],
   app/view/tool_modules/emissions_by,
@@ -62,6 +63,12 @@ ui <- function(id) {
     ),
     div(
       plotlyOutput(ns("map"), height = "50rem"),
+      Slider.shinyInput(
+        ns("years_slider"),
+        value = 2023,
+        min = min(as.numeric(ghg_tspc_years)),
+        max = max(as.numeric(ghg_tspc_years))
+      ),
       class = "ms-Grid-col ms-sm10 ms-md8"
     ),
     div(
@@ -113,7 +120,7 @@ server <- function(id) {
         gpd_data = ghg_gdp_globe_map,
         sector_substance_data = ghg_sector_globe_map
       ) |>
-        filter(year == "2023") |>
+        filter(year == as.character(input$years_slider)) |>
         rename(
           cc = country,
           value = emission
@@ -140,7 +147,7 @@ server <- function(id) {
       ) |>
         config(displayModeBar = "always") |>
         layout(
-          title = paste0(plot_title, ", year 2023"),
+          title = paste0(plot_title, ", year ", input$years_slider),
           margin = list(t = 80),
           geo = list(
             showframe = TRUE,
