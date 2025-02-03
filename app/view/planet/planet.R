@@ -1,9 +1,9 @@
 box::use(
   dplyr[distinct, filter, pull, rename, select],
-  plotly[config, layout, plot_ly, plotlyOutput, renderPlotly],
+  plotly[config, event_data, layout, plot_ly, plotlyOutput, renderPlotly],
   shiny.fluent[Dropdown.shinyInput, Slider.shinyInput, Toggle.shinyInput],
   shiny.fluent[updateDropdown.shinyInput],
-  shiny[div, getDefaultReactiveDomain, moduleServer, NS, observeEvent, req],
+  shiny[div, getDefaultReactiveDomain, isolate, moduleServer, NS, observeEvent, reactiveVal, req],
   stats[na.omit],
 )
 
@@ -99,6 +99,27 @@ server <- function(id) {
 
     emissions_by$server("emissions_by")
 
+    camera_settings <- reactiveVal(NULL)
+
+    observeEvent(input$is_3d_globe, {
+      if (input$is_3d_globe) {
+        lon <- 0.2398806
+        lat <- -1.139812
+        scale <- 0.8705506
+      } else {
+        lon <- 0.6595555
+        lat <- 0.5113528
+        scale <- 1
+      }
+      camera_settings(
+        list(
+          lon = lon,
+          lat = lat,
+          scale = scale
+        )
+      )
+    })
+
     output$map <- renderPlotly({
       req(input$selected_countries)
 
@@ -136,14 +157,15 @@ server <- function(id) {
       globe_type <- ifelse(input$is_3d_globe, "orthographic", "natural earth")
 
       # Create Plotly map
-      plot_ly(
+      fig <- plot_ly(
         data = filtered_data,
         type = "choropleth",
         locations = filtered_data$cc,
         locationmode = "country names",
         z = filtered_data$value,
         colorscale = "Redor",
-        reversescale = FALSE
+        reversescale = FALSE,
+        source = ns("globe")
       ) |>
         config(displayModeBar = "always") |>
         layout(
@@ -155,7 +177,69 @@ server <- function(id) {
             projection = list(type = globe_type)
           )
         )
+
+      last_camera <- isolate(camera_settings())
+      if (!is.null(last_camera)) {
+        if (globe_type == "orthographic") {
+          fig <- fig |> layout(
+            geo = list(
+              projection = list(
+                rotation = list(
+                  lon = last_camera$lon,
+                  lat = last_camera$lat
+                ),
+                scale = last_camera$scale
+              )
+            )
+          )
+        } else if (globe_type == "natural earth") {
+          fig <- fig |> layout(
+            geo = list(
+              center = list(
+                lon = last_camera$lon,
+                lat = last_camera$lat
+              ),
+              projection = list(
+                scale = last_camera$scale
+              )
+            )
+          )
+        }
+      }
+
+      return(fig)
     })
+
+    observeEvent(event_data("plotly_relayout", ns("globe")), {
+      data_event <- event_data("plotly_relayout", ns("globe"))
+      if (input$is_3d_globe) {
+        lon <- data_event$geo.projection.rotation.lon
+        lat <- data_event$geo.projection.rotation.lat
+        scale <- data_event$geo.projection.scale
+      } else {
+        lon <- data_event$geo.center.lon
+        lat <- data_event$geo.center.lat
+        scale <- data_event$geo.projection.scale
+      }
+      if (!is.null(scale)) {
+        camera_settings(
+          list(
+            lon = lon,
+            lat = lat,
+            scale = scale
+          )
+        )
+      } else {
+        camera_settings(
+          list(
+            lon = lon,
+            lat = lat,
+            scale = 0.7
+          )
+        )
+      }
+    })
+
 
   })
 }
