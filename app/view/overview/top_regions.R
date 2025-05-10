@@ -18,8 +18,8 @@ box::use(
   app / logic / data[ghg_totals_by_country],
   app / logic / test_id_datatables[test_id_datatables],
   app / logic / top_regions_help[get_countries_he, get_plot_title],
-  app / logic / top_regions_help[get_regions_emissions],
   app / logic / top_regions_help[get_regions_emissions_label],
+  app / logic / top_regions_help[get_regions_emissions],
 )
 
 #' @export
