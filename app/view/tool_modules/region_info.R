@@ -1,6 +1,7 @@
 box::use(
   plotly[plotlyOutput, renderPlotly],
-  shiny[div, moduleServer, NS, observeEvent, reactiveVal, renderUI, uiOutput],
+  shiny[div, tagAppendAttributes, moduleServer, NS, observeEvent, reactiveVal, renderUI, uiOutput],
+  stringr[str_split_fixed],
 )
 
 box::use(
@@ -30,13 +31,23 @@ ui <- function(id, key_region, text_region, visible_region, key_year, text_year,
       cb_options = get_options(ghg_tspc_years),
       is_visible = visible_year
     ),
-    uiOutput(ns("total_ghg")),
-    uiOutput(ns("percapita_ghg")),
-    uiOutput(ns("gdp_ghg")),
+    uiOutput(ns("total_ghg"), `data-test` = paste0(str_split_fixed(id, "-", 3)[3], "-total_ghg")),
+    uiOutput(ns("percapita_ghg"), `data-test` = paste0(str_split_fixed(id, "-", 3)[3], "-percapita_ghg")),
+    uiOutput(ns("gdp_ghg"), `data-test` = paste0(str_split_fixed(id, "-", 3)[3], "-gdp_ghg")),
     div(style = "height: 10px"),
-    plotlyOutput(ns("sector_contribution")),
+    div(
+      plotlyOutput(ns("sector_contribution"))
+    ) |>
+      tagAppendAttributes(
+        `data-test` = paste0(str_split_fixed(id, "-", 3)[3], "-sector_contribution")
+      ),
     div(style = "height: 10px"),
-    plotlyOutput(ns("substance_contribution")),
+    div(
+      plotlyOutput(ns("substance_contribution")),
+    ) |>
+      tagAppendAttributes(
+        `data-test` = paste0(str_split_fixed(id, "-", 3)[3], "-substance_contribution")
+      ),
     class = "card ms-depth-8 ms-sm12 ms-md6",
     style = "background-color: #ffff; text-align: left;"
   )

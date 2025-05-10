@@ -41,7 +41,8 @@ ui <- function(id) {
                   "max-height" = "300px!important"
                 )
               )
-            )
+            ),
+            `data-test` = "compare-between"
           ),
           combobox_search$ui(
             ns("select_region"),
