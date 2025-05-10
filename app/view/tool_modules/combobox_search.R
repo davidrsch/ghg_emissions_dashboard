@@ -6,7 +6,14 @@ box::use(
 )
 
 #' @export
-ui <- function(id, cb_label, default_key, default_text, cb_options, is_visible) {
+ui <- function(
+  id,
+  cb_label,
+  default_key,
+  default_text,
+  cb_options,
+  is_visible
+) {
   ns <- NS(id)
   ComboBox.shinyInput(
     ns("searchable_cb"),
@@ -136,6 +143,5 @@ server <- function(id, value, cb_label, default_text, cb_options, is_visible) {
         )
       }
     })
-
   })
 }

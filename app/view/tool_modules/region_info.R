@@ -1,15 +1,7 @@
 box::use(
   plotly[plotlyOutput, renderPlotly],
-  shiny[
-    div,
-    tagAppendAttributes,
-    moduleServer,
-    NS,
-    observeEvent,
-    reactiveVal,
-    renderUI,
-    uiOutput
-  ],
+  shiny[div, moduleServer, NS, observeEvent, reactiveVal, renderUI],
+  shiny[tagAppendAttributes, uiOutput],
   stringr[str_split_fixed],
 )
 
@@ -178,11 +170,9 @@ server <- function(
       )
     })
 
-    return(
-      list(
-        region = selected_region,
-        year = selected_year
-      )
+    list(
+      region = selected_region,
+      year = selected_year
     )
   })
 }

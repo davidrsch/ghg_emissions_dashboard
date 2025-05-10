@@ -6,20 +6,21 @@ box::use(
 #' @export
 get_value_of_country_in_year <- function(data, country_code, year) {
   country_values <- which(data["edgar_country_code"] == country_code)
-  value_in_year <- data[country_values, paste0("x", year)][[1]]
-  return(value_in_year)
+  # value_in_year
+  data[country_values, paste0("x", year)][[1]]
 }
 
 #' @export
 get_country_name <- function(data, country_code) {
   country_values <- which(data["edgar_country_code"] == country_code)
-  country_name <- data[country_values, "country"][[1]]
-  return(country_name)
+  # country_name
+  data[country_values, "country"][[1]]
 }
 
 #' @export
 get_change_color <- function(change) {
-  change_color <- ifelse(
+  # change_color
+  ifelse(
     change == "",
     "#DADAD9",
     ifelse(
@@ -32,12 +33,12 @@ get_change_color <- function(change) {
       )
     )
   )
-  return(change_color)
 }
 
 #' @export
 get_change_symbol <- function(change) {
-  change_symbol <- ifelse(
+  # change_symbol
+  ifelse(
     change == "",
     "CalculatorSubstract",
     ifelse(
@@ -50,7 +51,6 @@ get_change_symbol <- function(change) {
       )
     )
   )
-  return(change_symbol)
 }
 
 #' @export
@@ -79,7 +79,11 @@ get_primary_ui <- function(data, actual_year, country_code, years, unit) {
   if (exist_actual_year) {
     prev_year <- as.character(as.numeric(actual_year) - 1)
     exist_prev_year <- is.element(prev_year, years)
-    actual_value <- get_value_of_country_in_year(data, country_code, actual_year)
+    actual_value <- get_value_of_country_in_year(
+      data,
+      country_code,
+      actual_year
+    )
 
     if (exist_prev_year && !is.na(actual_value)) {
       prev_value <- get_value_of_country_in_year(data, country_code, prev_year)
@@ -96,7 +100,6 @@ get_primary_ui <- function(data, actual_year, country_code, years, unit) {
     } else {
       actual_value <- "No data"
     }
-
   } else {
     actual_value <- "No data"
     change <- ""
@@ -106,7 +109,8 @@ get_primary_ui <- function(data, actual_year, country_code, years, unit) {
   change_symbol <- get_change_symbol(change)
   change <- get_change_format(change)
 
-  ui_to_show <- div(
+  # ui_to_show
+  div(
     Text(
       country,
       variant = "medium"
@@ -135,7 +139,6 @@ get_primary_ui <- function(data, actual_year, country_code, years, unit) {
       style = paste0("color:", change_color, ";")
     )
   )
-  return(ui_to_show)
 }
 
 #' @export
@@ -146,7 +149,11 @@ get_secondary_ui <- function(data, actual_year, country_code, years, unit) {
   if (exist_actual_year) {
     prev_year <- as.character(as.numeric(actual_year) - 1)
     exist_prev_year <- is.element(prev_year, years)
-    actual_value <- get_value_of_country_in_year(data, country_code, actual_year)
+    actual_value <- get_value_of_country_in_year(
+      data,
+      country_code,
+      actual_year
+    )
 
     if (exist_prev_year && !is.na(actual_value)) {
       prev_value <- get_value_of_country_in_year(data, country_code, prev_year)
@@ -163,7 +170,6 @@ get_secondary_ui <- function(data, actual_year, country_code, years, unit) {
     } else {
       actual_value <- "No data"
     }
-
   } else {
     actual_value <- "No data"
     change <- ""
@@ -173,7 +179,8 @@ get_secondary_ui <- function(data, actual_year, country_code, years, unit) {
   change_symbol <- get_change_symbol(change)
   change <- get_change_format(change)
 
-  ui_to_show <- div(
+  # ui_to_show
+  div(
     Text(
       country,
       variant = "xSmall"
@@ -202,5 +209,4 @@ get_secondary_ui <- function(data, actual_year, country_code, years, unit) {
       style = paste0("color:", change_color, ";")
     )
   )
-  return(ui_to_show)
 }

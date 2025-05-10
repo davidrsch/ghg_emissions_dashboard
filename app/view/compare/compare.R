@@ -5,10 +5,10 @@ box::use(
 )
 
 box::use(
-  app/logic/data[edgar_cc, ghg_tspc_years],
-  app/logic/get_options[get_options],
-  app/view/tool_modules/combobox_search,
-  app/view/tool_modules/region_info,
+  app / logic / data[edgar_cc, ghg_tspc_years],
+  app / logic / get_options[get_options],
+  app / view / tool_modules / combobox_search,
+  app / view / tool_modules / region_info,
 )
 
 #' @export
@@ -89,7 +89,6 @@ ui <- function(id) {
 #' @export
 server <- function(id) {
   moduleServer(id, function(input, output, session) {
-
     ns <- session$ns
     combobox_region_visibility <- reactiveVal(FALSE)
     combobox_regions_visibility <- reactiveVal(TRUE)
@@ -212,6 +211,5 @@ server <- function(id) {
       complementary_year = first_region_key$year,
       visible_year = combobox_years_visibility
     )
-
   })
 }

@@ -1,44 +1,24 @@
 box::use(
   dplyr[tibble],
-  DT[
-    datatable,
-    dataTableProxy,
-    DTOutput,
-    formatCurrency,
-    renderDT,
-    replaceData,
-    selectRows
-  ],
+  DT[datatable, dataTableProxy, DTOutput, formatCurrency, renderDT],
+  DT[replaceData, selectRows],
   grDevices[colorRampPalette],
   plotly[config, layout, plot_ly, plotlyOutput, renderPlotly],
   shiny.fluent[PrimaryButton.shinyInput, Stack, Text],
-  shiny[
-    div,
-    moduleServer,
-    NS,
-    observeEvent,
-    reactiveVal,
-    renderUI,
-    tagAppendAttributes,
-    uiOutput
-  ],
+  shiny[div, moduleServer, NS, observeEvent, reactiveVal, renderUI],
+  shiny[tagAppendAttributes, uiOutput],
   stringr[str_split_fixed],
   utils[tail],
 )
 
 box::use(
-  app /
-    logic /
-    data[
-      ghg_by_sector_and_country,
-      ghg_per_capita_by_country,
-      ghg_per_gdp_by_country
-    ],
+  app / logic / data[ghg_by_sector_and_country],
+  app / logic / data[ghg_per_capita_by_country],
+  app / logic / data[ghg_per_gdp_by_country],
   app / logic / data[ghg_totals_by_country],
   app / logic / test_id_datatables[test_id_datatables],
-  app /
-    logic /
-    top_regions_help[get_countries_he, get_plot_title, get_regions_emissions],
+  app / logic / top_regions_help[get_countries_he, get_plot_title],
+  app / logic / top_regions_help[get_regions_emissions],
   app / logic / top_regions_help[get_regions_emissions_label],
 )
 
@@ -264,6 +244,6 @@ server <- function(id, inputs, sidebar_controls) {
       }
     )
 
-    return(countries)
+    countries
   })
 }

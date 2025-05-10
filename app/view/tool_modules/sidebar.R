@@ -5,7 +5,15 @@ box::use(
 )
 
 #' @export
-ui <- function(id, name, title, sidebar_content, sidebar_bgc, main_content, main_bgc) {
+ui <- function(
+  id,
+  name,
+  title,
+  sidebar_content,
+  sidebar_bgc,
+  main_content,
+  main_bgc
+) {
   ns <- NS(id)
   div(
     class = "ms-Grid-row",
@@ -42,7 +50,11 @@ ui <- function(id, name, title, sidebar_content, sidebar_bgc, main_content, main
     div(
       id = ns("main"),
       class = "ms-Grid-col ms-sm12 ms-xl10",
-      style = paste0("background-color:", main_bgc, "; overflow-y: auto; height: 100%;"),
+      style = paste0(
+        "background-color:",
+        main_bgc,
+        "; overflow-y: auto; height: 100%;"
+      ),
       div(
         class = "ms-hiddenLgDown",
         style = "position: sticky; top: 0; left:0; z-index: 1",
@@ -133,6 +145,6 @@ server <- function(id) {
       )
     })
 
-    return(input)
+    input
   })
 }

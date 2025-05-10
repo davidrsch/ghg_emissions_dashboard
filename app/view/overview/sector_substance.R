@@ -3,16 +3,8 @@ box::use(
   dplyr[tibble, ungroup],
   plotly[config, layout, plot_ly, plotlyOutput, renderPlotly],
   shiny.fluent[Stack],
-  shiny[
-    div,
-    moduleServer,
-    NS,
-    observeEvent,
-    reactiveVal,
-    renderUI,
-    tagAppendAttributes,
-    uiOutput
-  ],
+  shiny[div, moduleServer, NS, observeEvent, reactiveVal, renderUI],
+  shiny[tagAppendAttributes, uiOutput],
   stringr[str_split_fixed],
   tibble[deframe],
 )

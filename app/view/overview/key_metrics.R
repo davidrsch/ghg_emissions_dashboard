@@ -4,9 +4,11 @@ box::use(
 )
 
 box::use(
-  app/logic/data[ghg_gdplulucf_years, ghg_per_capita_by_country, ghg_per_gdp_by_country],
-  app/logic/data[ghg_totals_by_country, ghg_tspc_years],
-  app/logic/key_metrics_help[get_primary_ui, get_secondary_ui],
+  app / logic / data[ghg_gdplulucf_years],
+  app / logic / data[ghg_per_capita_by_country],
+  app / logic / data[ghg_per_gdp_by_country],
+  app / logic / data[ghg_totals_by_country, ghg_tspc_years],
+  app / logic / key_metrics_help[get_primary_ui, get_secondary_ui],
 )
 
 #' @export

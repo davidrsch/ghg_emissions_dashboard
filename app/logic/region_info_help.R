@@ -9,13 +9,21 @@ box::use(
 )
 
 box::use(
-  app/logic/data[ghg_by_sector_and_country, ghg_per_capita_by_country, ghg_per_gdp_by_country],
-  app/logic/data[ghg_totals_by_country],
-  app/logic/key_metrics_help[get_value_of_country_in_year],
+  app / logic / data[ghg_by_sector_and_country],
+  app / logic / data[ghg_per_capita_by_country],
+  app / logic / data[ghg_per_gdp_by_country],
+  app / logic / data[ghg_totals_by_country],
+  app / logic / key_metrics_help[get_value_of_country_in_year],
 )
 
 #' @export
-get_region_kpi_ui <- function(data, country_code, complementary_region, year, complementary_year) {
+get_region_kpi_ui <- function(
+  data,
+  country_code,
+  complementary_region,
+  year,
+  complementary_year
+) {
   if (data == "ghg_totals") {
     description <- "Total GHG Emissions in Mt: "
     data_to_use <- ghg_totals_by_country
@@ -52,7 +60,8 @@ get_region_kpi_ui <- function(data, country_code, complementary_region, year, co
     )
   )
 
-  ui <- Stack(
+  # ui
+  Stack(
     horizontal = TRUE,
     horizontalAlign = "space-between",
     verticalAlign = "center",
@@ -70,7 +79,6 @@ get_region_kpi_ui <- function(data, country_code, complementary_region, year, co
     ),
     style = "margin-top: 10px;"
   )
-  return(ui)
 }
 
 #' @export
@@ -91,21 +99,30 @@ get_plot_data <- function(type, code, year) {
     ) |>
     ungroup()
 
+  # data
   if (type == "sector") {
-    data <- data |>
+    data |>
       arrange(sector)
   } else if (type == "substance") {
-    data <- data |>
+    data |>
       arrange(substance)
   }
-  return(data)
 }
 
 #' @export
-get_region_plot <- function(type, country_code, complementary_region, year, complementary_year) {
-
+get_region_plot <- function(
+  type,
+  country_code,
+  complementary_region,
+  year,
+  complementary_year
+) {
   primary_data <- get_plot_data(type, country_code, year)
-  secondary_data <- get_plot_data(type, complementary_region, complementary_year)
+  secondary_data <- get_plot_data(
+    type,
+    complementary_region,
+    complementary_year
+  )
   if (type == "sector") {
     primary_data <- primary_data |>
       left_join(
@@ -147,7 +164,7 @@ get_region_plot <- function(type, country_code, complementary_region, year, comp
     plot <- primary_data |>
       plot_ly(
         x = ~emission,
-        y = ~reorder(sector, desc(sector)),
+        y = ~ reorder(sector, desc(sector)),
         color = ~sector,
         colors = colors_to,
         type = "bar",
@@ -158,7 +175,7 @@ get_region_plot <- function(type, country_code, complementary_region, year, comp
     plot <- primary_data |>
       plot_ly(
         x = ~emission,
-        y = ~reorder(substance, desc(substance)),
+        y = ~ reorder(substance, desc(substance)),
         color = ~substance,
         colors = colors_to,
         type = "bar",
@@ -167,7 +184,8 @@ get_region_plot <- function(type, country_code, complementary_region, year, comp
     x_axis <- "Emission by substance"
   }
 
-  plot <- plot |>
+  # plot
+  plot |>
     config(displayModeBar = "always") |>
     layout(
       showlegend = FALSE,
@@ -186,5 +204,4 @@ get_region_plot <- function(type, country_code, complementary_region, year, comp
       xaxis = list(title = x_axis),
       yaxis = list(title = country_code)
     )
-  return(plot)
 }

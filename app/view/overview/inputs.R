@@ -89,6 +89,6 @@ server <- function(id) {
 
     emissions_by$server("emissions_by")
 
-    return(input)
+    input
   })
 }

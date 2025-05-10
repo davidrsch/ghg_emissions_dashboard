@@ -1,43 +1,19 @@
 box::use(
   dplyr[distinct, filter, pull, rename, select],
-  plotly[
-    animation_slider,
-    config,
-    event_data,
-    layout,
-    plot_ly,
-    plotlyOutput,
-    renderPlotly
-  ],
-  shiny.fluent[
-    Dropdown.shinyInput,
-    Toggle.shinyInput,
-    updateDropdown.shinyInput
-  ],
-  shiny[
-    div,
-    getDefaultReactiveDomain,
-    isolate,
-    moduleServer,
-    NS,
-    observeEvent,
-    reactiveVal,
-    req,
-    tagAppendAttributes
-  ],
+  plotly[animation_slider, config, event_data, layout, plot_ly, plotlyOutput],
+  plotly[renderPlotly],
+  shiny.fluent[Dropdown.shinyInput, Toggle.shinyInput],
+  shiny.fluent[updateDropdown.shinyInput],
+  shiny[div, getDefaultReactiveDomain, isolate, moduleServer, NS],
+  shiny[observeEvent, reactiveVal, req, tagAppendAttributes],
   stats[na.omit],
   stringr[str_split_fixed],
 )
 
 box::use(
-  app /
-    logic /
-    data[
-      continents,
-      ghg_capita_globe_map,
-      ghg_gdp_globe_map,
-      ghg_sector_globe_map
-    ],
+  app / logic / data[continents, ghg_capita_globe_map],
+  app / logic / data[ghg_gdp_globe_map],
+  app / logic / data[ghg_sector_globe_map],
   app / logic / data[ghg_totals_globe_map, globe_cc],
   app / logic / get_options[get_options],
   app / logic / top_regions_help[get_countries_he, get_plot_title],
