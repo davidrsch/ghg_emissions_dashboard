@@ -1,18 +1,45 @@
 box::use(
   dplyr[tibble],
-  DT[datatable, dataTableProxy, DTOutput, formatCurrency, renderDT, replaceData, selectRows],
+  DT[
+    datatable,
+    dataTableProxy,
+    DTOutput,
+    formatCurrency,
+    renderDT,
+    replaceData,
+    selectRows
+  ],
   grDevices[colorRampPalette],
   plotly[config, layout, plot_ly, plotlyOutput, renderPlotly],
   shiny.fluent[PrimaryButton.shinyInput, Stack, Text],
-  shiny[div, moduleServer, NS, observeEvent, reactiveVal, renderUI, uiOutput],
+  shiny[
+    div,
+    moduleServer,
+    NS,
+    observeEvent,
+    reactiveVal,
+    renderUI,
+    tagAppendAttributes,
+    uiOutput
+  ],
+  stringr[str_split_fixed],
   utils[tail],
 )
 
 box::use(
-  app/logic/data[ghg_by_sector_and_country, ghg_per_capita_by_country, ghg_per_gdp_by_country],
-  app/logic/data[ghg_totals_by_country],
-  app/logic/top_regions_help[get_countries_he, get_plot_title, get_regions_emissions],
-  app/logic/top_regions_help[get_regions_emissions_label],
+  app /
+    logic /
+    data[
+      ghg_by_sector_and_country,
+      ghg_per_capita_by_country,
+      ghg_per_gdp_by_country
+    ],
+  app / logic / data[ghg_totals_by_country],
+  app / logic / test_id_datatables[test_id_datatables],
+  app /
+    logic /
+    top_regions_help[get_countries_he, get_plot_title, get_regions_emissions],
+  app / logic / top_regions_help[get_regions_emissions_label],
 )
 
 #' @export
@@ -30,17 +57,34 @@ ui <- function(id) {
     ),
     div(
       uiOutput(ns("tpt_label")),
-      DTOutput(ns("top_regions_table")),
+      div(
+        DTOutput(ns("top_regions_table")),
+        `data-test` = paste0(
+          str_split_fixed(id, "-", 2)[2],
+          "-top_regions_table"
+        )
+      ),
       Stack(
         horizontal = TRUE,
         horizontalAlign = "center",
-        PrimaryButton.shinyInput(ns("deselect_btn"), text = "Deselect All Rows"),
+        PrimaryButton.shinyInput(
+          ns("deselect_btn"),
+          text = "Deselect All Rows"
+        ),
       ),
       class = "card ms-depth-8 ms-sm12 ms-xl4",
       style = "background-color: #ffff; text-align: left;"
     ),
     div(
-      plotlyOutput(ns("top_emissions_chart"), height = "100%"),
+      div(
+        plotlyOutput(ns("top_emissions_chart"), height = "100%")
+      ) |>
+        tagAppendAttributes(
+          `data-test` = paste0(
+            str_split_fixed(id, "-", 2)[2],
+            "-top_emissions_chart"
+          )
+        ),
       class = "card ms-depth-8 ms-sm12 ms-xl8",
       style = "background-color: #ffff; overflow-y: auto;"
     )
@@ -50,7 +94,6 @@ ui <- function(id) {
 #' @export
 server <- function(id, inputs, sidebar_controls) {
   moduleServer(id, function(input, output, session) {
-
     top_data <- reactiveVal(tibble(country = NA, emission = NA))
 
     observeEvent(
@@ -81,6 +124,7 @@ server <- function(id, inputs, sidebar_controls) {
           dom = "tip",
           pageLength = 10,
           pagingType = "simple",
+          initComplete = test_id_datatables("top_regions"),
           columnDefs = list(
             list(className = "dt-center", targets = 0),
             list(className = "dt-left", targets = 1),
@@ -144,7 +188,10 @@ server <- function(id, inputs, sidebar_controls) {
       ),
       {
         output$top_emissions_chart <- renderPlotly({
-          countries(top_data()[input$top_regions_table_rows_selected, "country"][[1]])
+          countries(top_data()[
+            input$top_regions_table_rows_selected,
+            "country"
+          ][[1]])
           if (all(is.na(countries()))) {
             plot_ly(type = "scatter", mode = "text") |>
               layout(
@@ -173,7 +220,9 @@ server <- function(id, inputs, sidebar_controls) {
               sector_substance_data = ghg_by_sector_and_country
             )
             unique_countries <- length(countries())
-            colors <- colorRampPalette(RColorBrewer::brewer.pal(8, "Set2"))(unique_countries)
+            colors <- colorRampPalette(RColorBrewer::brewer.pal(8, "Set2"))(
+              unique_countries
+            )
             plot_title <- get_plot_title(
               inputs$`emissions_by-emissions_by`,
               inputs$`emissions_by-emissions_by_sectors`,
@@ -182,7 +231,12 @@ server <- function(id, inputs, sidebar_controls) {
             y_axis_label <- ifelse(
               is.element(
                 inputs$`emissions_by-emissions_by`,
-                c("Total emissions", "Sector", "Substance", "Sector & Substance")
+                c(
+                  "Total emissions",
+                  "Sector",
+                  "Substance",
+                  "Sector & Substance"
+                )
               ),
               "Emissions in Mt",
               "Emissions in t"
@@ -211,6 +265,5 @@ server <- function(id, inputs, sidebar_controls) {
     )
 
     return(countries)
-
   })
 }

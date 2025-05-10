@@ -2,13 +2,14 @@ box::use(
   dplyr[last],
   shiny.fluent[ComboBox.shinyInput, Text],
   shiny[div, hr, moduleServer, NS, reactiveVal],
+  stringr[str_split_fixed],
 )
 
 box::use(
-  app/logic/data[edgar_cc, ghg_tspc_years],
-  app/logic/get_options[get_options],
-  app/view/tool_modules/combobox_search,
-  app/view/tool_modules/emissions_by,
+  app / logic / data[edgar_cc, ghg_tspc_years],
+  app / logic / get_options[get_options],
+  app / view / tool_modules / combobox_search,
+  app / view / tool_modules / emissions_by,
 )
 
 #' @export
@@ -32,7 +33,8 @@ ui <- function(id) {
             "max-height" = "300px!important"
           )
         )
-      )
+      ),
+      `data-test` = paste0(str_split_fixed(id, "-", 2)[2], "-kpi_years")
     ),
     combobox_search$ui(
       ns("kpi_primary_region"),

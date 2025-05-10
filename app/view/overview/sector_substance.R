@@ -3,12 +3,22 @@ box::use(
   dplyr[tibble, ungroup],
   plotly[config, layout, plot_ly, plotlyOutput, renderPlotly],
   shiny.fluent[Stack],
-  shiny[div, moduleServer, NS, observeEvent, reactiveVal, renderUI, uiOutput],
+  shiny[
+    div,
+    moduleServer,
+    NS,
+    observeEvent,
+    reactiveVal,
+    renderUI,
+    tagAppendAttributes,
+    uiOutput
+  ],
+  stringr[str_split_fixed],
   tibble[deframe],
 )
 
 box::use(
-  app/logic/data[ghg_by_sector_and_country],
+  app / logic / data[ghg_by_sector_and_country],
 )
 
 #' @export
@@ -30,11 +40,23 @@ ui <- function(id) {
         div(
           plotlyOutput(ns("stacked_sectors"), height = "100%"),
           style = "flex-grow: 1; overflow: hidden; max-width: calc(100% - 165px);"
-        ),
+        ) |>
+          tagAppendAttributes(
+            `data-test` = paste0(
+              str_split_fixed(id, "-", 2)[2],
+              "-stacked_sectors"
+            )
+          ),
         div(
           uiOutput(ns("sector_plot_filters")),
           style = "width: 165px; margin-left: 8px;"
-        ),
+        ) |>
+          tagAppendAttributes(
+            `data-test` = paste0(
+              str_split_fixed(id, "-", 2)[2],
+              "-sector_plot_filters"
+            )
+          ),
         style = "display: flex; align-items: start; box-sizing: border-box; width: 100%;"
       ),
       class = "card ms-depth-8 ms-sm12 ms-xl6",
@@ -45,11 +67,23 @@ ui <- function(id) {
         div(
           plotlyOutput(ns("stacked_substance"), height = "100%"),
           style = "flex-grow: 1; overflow: hidden; max-width: calc(100% - 165px);"
-        ),
+        ) |>
+          tagAppendAttributes(
+            `data-test` = paste0(
+              str_split_fixed(id, "-", 2)[2],
+              "-stacked_substance"
+            )
+          ),
         div(
           uiOutput(ns("substance_plot_filters")),
           style = "width: 165px; margin-left: 8px;"
-        ),
+        ) |>
+          tagAppendAttributes(
+            `data-test` = paste0(
+              str_split_fixed(id, "-", 2)[2],
+              "-substance_plot_filters"
+            )
+          ),
         style = "display: flex; align-items: start; box-sizing: border-box; width: 100%;"
       ),
       class = "card ms-depth-8 ms-sm12 ms-xl6",
@@ -64,21 +98,44 @@ server <- function(id, inputs, sidebar_controls, countries, main_inputs) {
     ns <- session$ns
     colors_sector <- tibble(
       sector = c(
-        "Waste", "Transport", "Processes", "Power Industry", "Industrial Combustion",
-        "Fuel Exploitation", "Buildings", "Agriculture"
+        "Waste",
+        "Transport",
+        "Processes",
+        "Power Industry",
+        "Industrial Combustion",
+        "Fuel Exploitation",
+        "Buildings",
+        "Agriculture"
       ),
       color = c(
-        "#b3b3b3", "#e5c494", "#ffd92f", "#a6d854", "#e78ac3", "#8493b8",
-        "#fc8d62", "#66c2a5"
+        "#b3b3b3",
+        "#e5c494",
+        "#ffd92f",
+        "#a6d854",
+        "#e78ac3",
+        "#8493b8",
+        "#fc8d62",
+        "#66c2a5"
       ),
       hover_color = c(
-        "#808080", "#ffcd82", "#ffd000", "#ace64f", "#f861be", "#7892cf",
-        "#ff510c", "#15d498"
+        "#808080",
+        "#ffcd82",
+        "#ffd000",
+        "#ace64f",
+        "#f861be",
+        "#7892cf",
+        "#ff510c",
+        "#15d498"
       )
     )
 
     colors_substance <- tibble(
-      substance = c("GWP_100_AR5_N2O", "GWP_100_AR5_F-gases", "GWP_100_AR5_CH4", "CO2"),
+      substance = c(
+        "GWP_100_AR5_N2O",
+        "GWP_100_AR5_F-gases",
+        "GWP_100_AR5_CH4",
+        "CO2"
+      ),
       color = c("#e78ac3", "#8da0cb", "#fc8d62", "#66c2a5"),
       hover_color = c("#f861be", "#7892cf", "#ff510c", "#15d498")
     )
@@ -145,17 +202,25 @@ server <- function(id, inputs, sidebar_controls, countries, main_inputs) {
     selected_sector <- reactiveVal()
     observeEvent(
       c(
-        input$filter_sector_Waste, input$filter_sector_Transport, input$filter_sector_Processes,
-        input$filter_sector_Power_Industry, input$filter_sector_Industrial_Combustion,
-        input$filter_sector_Fuel_Exploitation, input$filter_sector_Buildings,
+        input$filter_sector_Waste,
+        input$filter_sector_Transport,
+        input$filter_sector_Processes,
+        input$filter_sector_Power_Industry,
+        input$filter_sector_Industrial_Combustion,
+        input$filter_sector_Fuel_Exploitation,
+        input$filter_sector_Buildings,
         input$filter_sector_Agriculture
       ),
       {
         selected <- colors_sector$sector[
           c(
-            input$filter_sector_Waste, input$filter_sector_Transport, input$filter_sector_Processes,
-            input$filter_sector_Power_Industry, input$filter_sector_Industrial_Combustion,
-            input$filter_sector_Fuel_Exploitation, input$filter_sector_Buildings,
+            input$filter_sector_Waste,
+            input$filter_sector_Transport,
+            input$filter_sector_Processes,
+            input$filter_sector_Power_Industry,
+            input$filter_sector_Industrial_Combustion,
+            input$filter_sector_Fuel_Exploitation,
+            input$filter_sector_Buildings,
             input$filter_sector_Agriculture
           )
         ]
@@ -167,14 +232,18 @@ server <- function(id, inputs, sidebar_controls, countries, main_inputs) {
     selected_substance <- reactiveVal()
     observeEvent(
       c(
-        input$filter_substance_GWP_100_AR5_N2O, input$`filter_substance_GWP_100_AR5_F-gases`,
-        input$filter_substance_GWP_100_AR5_CH4, input$filter_substance_CO2
+        input$filter_substance_GWP_100_AR5_N2O,
+        input$`filter_substance_GWP_100_AR5_F-gases`,
+        input$filter_substance_GWP_100_AR5_CH4,
+        input$filter_substance_CO2
       ),
       {
         selected <- colors_substance$substance[
           c(
-            input$filter_substance_GWP_100_AR5_N2O, input$`filter_substance_GWP_100_AR5_F-gases`,
-            input$filter_substance_GWP_100_AR5_CH4, input$filter_substance_CO2
+            input$filter_substance_GWP_100_AR5_N2O,
+            input$`filter_substance_GWP_100_AR5_F-gases`,
+            input$filter_substance_GWP_100_AR5_CH4,
+            input$filter_substance_CO2
           )
         ]
         selected_substance(selected)
@@ -191,7 +260,6 @@ server <- function(id, inputs, sidebar_controls, countries, main_inputs) {
         selected_sector
       ),
       {
-
         output$stacked_sectors <- renderPlotly({
           if (all(is.na(countries()))) {
             plot_ly(type = "scatter", mode = "text") |>
@@ -216,7 +284,10 @@ server <- function(id, inputs, sidebar_controls, countries, main_inputs) {
               filter(sector %in% selected_sector()) |>
               group_by(country, sector) |>
               summarise(
-                emission = sum(.data[[paste0("x", inputs$kpi_years$key)]], na.rm = TRUE)
+                emission = sum(
+                  .data[[paste0("x", inputs$kpi_years$key)]],
+                  na.rm = TRUE
+                )
               ) |>
               ungroup() |>
               group_by(country) |>
@@ -224,7 +295,7 @@ server <- function(id, inputs, sidebar_controls, countries, main_inputs) {
               ungroup() |>
               arrange(desc(total_emission), country) |>
               plot_ly(
-                x = ~factor(country, levels = unique(country)),
+                x = ~ factor(country, levels = unique(country)),
                 y = ~emission,
                 color = ~sector,
                 colors = colors_sector |>
@@ -254,7 +325,6 @@ server <- function(id, inputs, sidebar_controls, countries, main_inputs) {
               )
           }
         })
-
       }
     )
 
@@ -268,7 +338,6 @@ server <- function(id, inputs, sidebar_controls, countries, main_inputs) {
         selected_sector
       ),
       {
-
         output$stacked_substance <- renderPlotly({
           if (all(is.na(countries()))) {
             plot_ly(type = "scatter", mode = "text") |>
@@ -293,7 +362,10 @@ server <- function(id, inputs, sidebar_controls, countries, main_inputs) {
               filter(substance %in% selected_substance()) |>
               group_by(country, substance) |>
               summarise(
-                emission = sum(.data[[paste0("x", inputs$kpi_years$key)]], na.rm = TRUE)
+                emission = sum(
+                  .data[[paste0("x", inputs$kpi_years$key)]],
+                  na.rm = TRUE
+                )
               ) |>
               ungroup() |>
               group_by(country) |>
@@ -301,7 +373,7 @@ server <- function(id, inputs, sidebar_controls, countries, main_inputs) {
               ungroup() |>
               arrange(desc(total_emission), country) |>
               plot_ly(
-                x = ~factor(country, levels = unique(country)),
+                x = ~ factor(country, levels = unique(country)),
                 y = ~emission,
                 color = ~substance,
                 colors = colors_substance |>
@@ -331,9 +403,7 @@ server <- function(id, inputs, sidebar_controls, countries, main_inputs) {
               )
           }
         })
-
       }
     )
-
   })
 }

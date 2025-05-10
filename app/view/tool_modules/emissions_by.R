@@ -2,11 +2,12 @@ box::use(
   shiny.fluent[Dropdown.shinyInput],
   shiny.fluent[updateDropdown.shinyInput],
   shiny[div, getDefaultReactiveDomain, moduleServer, NS, observeEvent],
+  stringr[str_split_fixed],
 )
 
 box::use(
-  app/logic/data[sectors, substances],
-  app/logic/get_options[get_options],
+  app / logic / data[sectors, substances],
+  app / logic / get_options[get_options],
 )
 
 #' @export
@@ -18,7 +19,14 @@ ui <- function(id) {
       label = "Regions by:",
       value = "Total emissions",
       options = get_options(
-        c("Total emissions", "Per capita", "GDP", "Sector", "Substance", "Sector & Substance")
+        c(
+          "Total emissions",
+          "Per capita",
+          "GDP",
+          "Sector",
+          "Substance",
+          "Sector & Substance"
+        )
       ),
       calloutProps = list(
         styles = list(
@@ -26,7 +34,8 @@ ui <- function(id) {
             "max-height" = "300px!important"
           )
         )
-      )
+      ),
+      `data-test` = paste0(str_split_fixed(id, "-", 3)[3], "-emissions_by")
     ),
     Dropdown.shinyInput(
       ns("emissions_by_sectors"),
@@ -46,6 +55,10 @@ ui <- function(id) {
             "max-height" = "300px!important"
           )
         )
+      ),
+      `data-test` = paste0(
+        str_split_fixed(id, "-", 3)[3],
+        "-emissions_by_sector"
       )
     ),
     Dropdown.shinyInput(
@@ -66,6 +79,10 @@ ui <- function(id) {
             "max-height" = "300px!important"
           )
         )
+      ),
+      `data-test` = paste0(
+        str_split_fixed(id, "-", 3)[3],
+        "-emissions_by_substance"
       )
     )
   )
@@ -118,7 +135,9 @@ server <- function(id) {
         )
       }
 
-      if (is.element(input$emissions_by, c("Substance", "Sector & Substance"))) {
+      if (
+        is.element(input$emissions_by, c("Substance", "Sector & Substance"))
+      ) {
         updateDropdown.shinyInput(
           session = getDefaultReactiveDomain(),
           "emissions_by_substance",
@@ -158,8 +177,6 @@ server <- function(id) {
           )
         )
       }
-
     })
-
   })
 }
