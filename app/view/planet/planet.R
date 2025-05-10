@@ -1,17 +1,47 @@
 box::use(
   dplyr[distinct, filter, pull, rename, select],
-  plotly[animation_slider, config, event_data, layout, plot_ly, plotlyOutput, renderPlotly],
-  shiny.fluent[Dropdown.shinyInput, Toggle.shinyInput, updateDropdown.shinyInput],
-  shiny[div, getDefaultReactiveDomain, isolate, moduleServer, NS, observeEvent, reactiveVal, req],
+  plotly[
+    animation_slider,
+    config,
+    event_data,
+    layout,
+    plot_ly,
+    plotlyOutput,
+    renderPlotly
+  ],
+  shiny.fluent[
+    Dropdown.shinyInput,
+    Toggle.shinyInput,
+    updateDropdown.shinyInput
+  ],
+  shiny[
+    div,
+    getDefaultReactiveDomain,
+    isolate,
+    moduleServer,
+    NS,
+    observeEvent,
+    reactiveVal,
+    req,
+    tagAppendAttributes
+  ],
   stats[na.omit],
+  stringr[str_split_fixed],
 )
 
 box::use(
-  app/logic/data[continents,  ghg_capita_globe_map, ghg_gdp_globe_map, ghg_sector_globe_map],
-  app/logic/data[ghg_totals_globe_map, globe_cc],
-  app/logic/get_options[get_options],
-  app/logic/top_regions_help[get_countries_he, get_plot_title],
-  app/view/tool_modules/emissions_by,
+  app /
+    logic /
+    data[
+      continents,
+      ghg_capita_globe_map,
+      ghg_gdp_globe_map,
+      ghg_sector_globe_map
+    ],
+  app / logic / data[ghg_totals_globe_map, globe_cc],
+  app / logic / get_options[get_options],
+  app / logic / top_regions_help[get_countries_he, get_plot_title],
+  app / view / tool_modules / emissions_by,
 )
 
 #' @export
@@ -40,6 +70,10 @@ ui <- function(id) {
               "max-height" = "300px!important"
             )
           )
+        ),
+        `data-test` = paste0(
+          str_split_fixed(id, "-", 2)[2],
+          "-selected_regions"
         )
       ),
       Dropdown.shinyInput(
@@ -55,6 +89,10 @@ ui <- function(id) {
               "max-height" = "300px!important"
             )
           )
+        ),
+        `data-test` = paste0(
+          str_split_fixed(id, "-", 2)[2],
+          "-selected_countries"
         )
       ),
       class = "ms-Grid-col ms-sm1 ms-md2",
@@ -63,9 +101,23 @@ ui <- function(id) {
     div(
       plotlyOutput(ns("map"), height = "50rem"),
       class = "ms-Grid-col ms-sm10 ms-md8"
-    ),
+    ) |>
+      tagAppendAttributes(
+        `data-test` = paste0(
+          str_split_fixed(id, "-", 2)[2],
+          "-map"
+        )
+      ),
     div(
-      Toggle.shinyInput(label = "3D Globe", ns("is_3d_globe"), value = TRUE),
+      Toggle.shinyInput(
+        label = "3D Globe",
+        ns("is_3d_globe"),
+        value = TRUE,
+        `data-test` = paste0(
+          str_split_fixed(id, "-", 2)[2],
+          "-is_3d_globe"
+        )
+      ),
       emissions_by$ui(ns("emissions_by")),
       class = "ms-Grid-col ms-sm1 ms-md2",
       style = "padding-right: 20px;"
@@ -175,29 +227,31 @@ server <- function(id) {
       last_camera <- isolate(camera_settings())
       if (!is.null(last_camera)) {
         if (globe_type == "orthographic") {
-          fig <- fig |> layout(
-            geo = list(
-              projection = list(
-                rotation = list(
+          fig <- fig |>
+            layout(
+              geo = list(
+                projection = list(
+                  rotation = list(
+                    lon = last_camera$lon,
+                    lat = last_camera$lat
+                  ),
+                  scale = last_camera$scale
+                )
+              )
+            )
+        } else if (globe_type == "natural earth") {
+          fig <- fig |>
+            layout(
+              geo = list(
+                center = list(
                   lon = last_camera$lon,
                   lat = last_camera$lat
                 ),
-                scale = last_camera$scale
+                projection = list(
+                  scale = last_camera$scale
+                )
               )
             )
-          )
-        } else if (globe_type == "natural earth") {
-          fig <- fig |> layout(
-            geo = list(
-              center = list(
-                lon = last_camera$lon,
-                lat = last_camera$lat
-              ),
-              projection = list(
-                scale = last_camera$scale
-              )
-            )
-          )
         }
       }
 
@@ -233,6 +287,5 @@ server <- function(id) {
         )
       }
     })
-
   })
 }
