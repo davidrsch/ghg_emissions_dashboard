@@ -38,7 +38,7 @@ ui <- function(
         )
       )
     ),
-    `data-test` = paste0(str_split_fixed(id, "-", 3)[3], "-cb_search")
+    `data-testid` = paste0(str_split_fixed(id, "-", 3)[3], "-cb_search")
   )
 }
 

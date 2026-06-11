@@ -42,7 +42,7 @@ ui <- function(id) {
                 )
               )
             ),
-            `data-test` = "compare-between"
+            `data-testid` = "compare-between"
           ),
           combobox_search$ui(
             ns("select_region"),

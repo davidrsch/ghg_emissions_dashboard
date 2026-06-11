@@ -1,0 +1,63 @@
+import $ from 'jquery';
+import _ from 'lodash';
+
+Cypress.Commands.add('getDataFromDatatable', (datatable_testid) => {
+  cy.get(`[data-testid="${datatable_testid}"]`).then(($datatable) => {
+    const data = [];
+
+    // Extract header data (excluding the first `th`)
+    $datatable.find('thead tr:first-child').each((index, row) => {
+      const rowData = [];
+      $(row).find('th').each((index, cell) => {
+        rowData.push($(cell).text());
+      });
+      data.push(rowData);
+    });
+
+    // Extract tbody data
+    $datatable.find('tbody tr').each((index, row) => {
+      const rowData = [];
+      $(row).find('td').each((index, cell) => {
+        rowData.push($(cell).text());
+      });
+      data.push(rowData);
+    });
+
+    return JSON.stringify(data);
+  });
+});
+
+Cypress.Commands.add('compare_table_fixture', (table, fixture) => {
+  cy.fixture(fixture).then((expectedData) => {
+    cy.getDataFromDatatable(table).then((currentData) => {
+      expect(currentData).to.deep.equal(JSON.stringify(expectedData));
+      if (currentData !== JSON.stringify(expectedData)) {
+        cy.log('DataTable data does not match the expected data');
+      } else {
+        cy.log('DataTable data match the expected data');
+      }
+    });
+  });
+})
+
+Cypress.Commands.add('select_flow', (input, indices) => {
+  cy.get(`[data-testid="${input}"]`).click({force: true});
+  if (Array.isArray(indices)) {
+    indices.forEach((index) => {
+      cy.get(`[data-testid="${input}-callout"]`)
+        .find(`[data-index="${index}"]`)
+        .click({ force: true });
+    });
+  } else {
+    cy.get(`[data-testid="${input}-callout"]`)
+      .find(`[data-index="${indices}"]`)
+      .click({ force: true });
+  }
+});
+
+Cypress.Commands.add('get_filter_option', (filter, option) => {
+  cy.get(`[data-testid="${filter}"]`)
+        .parent()
+        .parent()
+        .find(`.option:nth-child(${option})`);
+});

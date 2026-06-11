@@ -35,7 +35,7 @@ ui <- function(id) {
           )
         )
       ),
-      `data-test` = paste0(str_split_fixed(id, "-", 2)[2], "-emissions_by")
+      `data-testid` = paste0(str_split_fixed(id, "-", 2)[2], "-emissions_by")
     ),
     Dropdown.shinyInput(
       ns("emissions_by_sectors"),
@@ -56,7 +56,7 @@ ui <- function(id) {
           )
         )
       ),
-      `data-test` = paste0(
+      `data-testid` = paste0(
         str_split_fixed(id, "-", 2)[2],
         "-emissions_by_sector"
       )
@@ -80,7 +80,7 @@ ui <- function(id) {
           )
         )
       ),
-      `data-test` = paste0(
+      `data-testid` = paste0(
         str_split_fixed(id, "-", 2)[2],
         "-emissions_by_substance"
       )

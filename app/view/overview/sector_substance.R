@@ -34,7 +34,7 @@ ui <- function(id) {
           style = "flex-grow: 1; overflow: hidden; max-width: calc(100% - 165px);"
         ) |>
           tagAppendAttributes(
-            `data-test` = paste0(
+            `data-testid` = paste0(
               str_split_fixed(id, "-", 2)[2],
               "-stacked_sectors"
             )
@@ -44,7 +44,7 @@ ui <- function(id) {
           style = "width: 165px; margin-left: 8px;"
         ) |>
           tagAppendAttributes(
-            `data-test` = paste0(
+            `data-testid` = paste0(
               str_split_fixed(id, "-", 2)[2],
               "-sector_plot_filters"
             )
@@ -61,7 +61,7 @@ ui <- function(id) {
           style = "flex-grow: 1; overflow: hidden; max-width: calc(100% - 165px);"
         ) |>
           tagAppendAttributes(
-            `data-test` = paste0(
+            `data-testid` = paste0(
               str_split_fixed(id, "-", 2)[2],
               "-stacked_substance"
             )
@@ -71,7 +71,7 @@ ui <- function(id) {
           style = "width: 165px; margin-left: 8px;"
         ) |>
           tagAppendAttributes(
-            `data-test` = paste0(
+            `data-testid` = paste0(
               str_split_fixed(id, "-", 2)[2],
               "-substance_plot_filters"
             )

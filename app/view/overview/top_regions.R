@@ -39,7 +39,7 @@ ui <- function(id) {
       uiOutput(ns("tpt_label")),
       div(
         DTOutput(ns("top_regions_table")),
-        `data-test` = paste0(
+        `data-testid` = paste0(
           str_split_fixed(id, "-", 2)[2],
           "-top_regions_table"
         )
@@ -60,7 +60,7 @@ ui <- function(id) {
         plotlyOutput(ns("top_emissions_chart"), height = "100%")
       ) |>
         tagAppendAttributes(
-          `data-test` = paste0(
+          `data-testid` = paste0(
             str_split_fixed(id, "-", 2)[2],
             "-top_emissions_chart"
           )

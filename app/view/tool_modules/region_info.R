@@ -42,22 +42,22 @@ ui <- function(
     ),
     uiOutput(
       ns("total_ghg"),
-      `data-test` = paste0(str_split_fixed(id, "-", 3)[3], "-total_ghg")
+      `data-testid` = paste0(str_split_fixed(id, "-", 3)[3], "-total_ghg")
     ),
     uiOutput(
       ns("percapita_ghg"),
-      `data-test` = paste0(str_split_fixed(id, "-", 3)[3], "-percapita_ghg")
+      `data-testid` = paste0(str_split_fixed(id, "-", 3)[3], "-percapita_ghg")
     ),
     uiOutput(
       ns("gdp_ghg"),
-      `data-test` = paste0(str_split_fixed(id, "-", 3)[3], "-gdp_ghg")
+      `data-testid` = paste0(str_split_fixed(id, "-", 3)[3], "-gdp_ghg")
     ),
     div(style = "height: 10px"),
     div(
       plotlyOutput(ns("sector_contribution"))
     ) |>
       tagAppendAttributes(
-        `data-test` = paste0(
+        `data-testid` = paste0(
           str_split_fixed(id, "-", 3)[3],
           "-sector_contribution"
         )
@@ -67,7 +67,7 @@ ui <- function(
       plotlyOutput(ns("substance_contribution")),
     ) |>
       tagAppendAttributes(
-        `data-test` = paste0(
+        `data-testid` = paste0(
           str_split_fixed(id, "-", 3)[3],
           "-substance_contribution"
         )

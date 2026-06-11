@@ -34,7 +34,7 @@ ui <- function(id) {
           )
         )
       ),
-      `data-test` = paste0(str_split_fixed(id, "-", 2)[2], "-kpi_years")
+      `data-testid` = paste0(str_split_fixed(id, "-", 2)[2], "-kpi_years")
     ),
     combobox_search$ui(
       ns("kpi_primary_region"),

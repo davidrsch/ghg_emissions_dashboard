@@ -10,17 +10,17 @@
  */
 function ComboBoxquery(module, cbIdentity) {
   // Add an event listener for input events on the target combobox's input field
-  $(document).on('input', `[data-test="${cbIdentity}"] div input`, () => {
+  $(document).on('input', `[data-testid="${cbIdentity}"] div input`, () => {
     const inputValue = document.querySelector(
-      `[data-test="${cbIdentity}"] div input`,
+      `[data-testid="${cbIdentity}"] div input`,
     ).value;
 
     // Select the combobox container and button elements
     const dropdownContainer = document.querySelector(
-      `[data-test="${cbIdentity}"] div`,
+      `[data-testid="${cbIdentity}"] div`,
     );
     const dropdownButton = document.querySelector(
-      `[data-test="${cbIdentity}"] div button`,
+      `[data-testid="${cbIdentity}"] div button`,
     );
 
     // Check if the dropdown is open by inspecting the 'is-open' class

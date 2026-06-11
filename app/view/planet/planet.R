@@ -47,7 +47,7 @@ ui <- function(id) {
             )
           )
         ),
-        `data-test` = paste0(
+        `data-testid` = paste0(
           str_split_fixed(id, "-", 2)[2],
           "-selected_regions"
         )
@@ -66,7 +66,7 @@ ui <- function(id) {
             )
           )
         ),
-        `data-test` = paste0(
+        `data-testid` = paste0(
           str_split_fixed(id, "-", 2)[2],
           "-selected_countries"
         )
@@ -79,7 +79,7 @@ ui <- function(id) {
       class = "ms-Grid-col ms-sm10 ms-md8"
     ) |>
       tagAppendAttributes(
-        `data-test` = paste0(
+        `data-testid` = paste0(
           str_split_fixed(id, "-", 2)[2],
           "-map"
         )
@@ -89,7 +89,7 @@ ui <- function(id) {
         label = "3D Globe",
         ns("is_3d_globe"),
         value = TRUE,
-        `data-test` = paste0(
+        `data-testid` = paste0(
           str_split_fixed(id, "-", 2)[2],
           "-is_3d_globe"
         )
