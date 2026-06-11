@@ -6,7 +6,7 @@ box::use(
   tibble[tibble],
 )
 
-ghg_data_path <- "app/static/data/edgar_2024_ghg_booklet_2024.xlsx"
+ghg_data_path <- "app/static/data/EDGAR_2025_GHG_booklet_2025.xlsx"
 country_codes_change <- tibble(
   cc = c("CHE", "ESP", "FRA", "ISR", "ITA", "SDN"),
   country = c("Switzerland", "Spain", "France", "Israel", "Italy", "Sudan")
@@ -18,7 +18,7 @@ continents <- read_excel("app/static/data/country_and_continent_codes.xlsx")
 #' @export
 ghg_totals_by_country <- read_excel(
   ghg_data_path,
-  "ghg_totals_by_country"
+  "GHG_totals_by_country"
 ) |>
   clean_names()
 
@@ -37,7 +37,7 @@ ghg_totals_globe_map <- country_codes_change |>
 #' @export
 ghg_by_sector_and_country <- read_excel(
   ghg_data_path,
-  "ghg_by_sector_and_country"
+  "GHG_by_sector_and_country"
 ) |>
   clean_names()
 
@@ -56,7 +56,7 @@ ghg_sector_globe_map <- country_codes_change |>
 #' @export
 ghg_per_gdp_by_country <- read_excel(
   ghg_data_path,
-  "ghg_per_gdp_by_country"
+  "GHG_per_GDP_by_country"
 ) |>
   clean_names()
 
@@ -75,7 +75,7 @@ ghg_gdp_globe_map <- country_codes_change |>
 #' @export
 ghg_per_capita_by_country <- read_excel(
   ghg_data_path,
-  "ghg_per_capita_by_country"
+  "GHG_per_capita_by_country"
 ) |>
   clean_names()
 
@@ -94,7 +94,7 @@ ghg_capita_globe_map <- country_codes_change |>
 #' @export
 lulucf_macroregions <- read_excel(
   ghg_data_path,
-  "lulucf_macroregions"
+  "LULUCF_macroregions"
 ) |>
   clean_names()
 

@@ -16,9 +16,9 @@ ui <- function(id) {
       p(
         "This dashboard is an independently developed tool designed to provide a dynamic",
         " exploration of global greenhouse gas  (GHG) emission trends. Built using publicly",
-        " available data from the 2024 Emissions Database for Global Atmospheric Research",
+        " available data from the 2025 Emissions Database for Global Atmospheric Research",
         " (EDGAR), it offers accessible visualizations and insights into worldwide emission",
-        " patterns up to 2023.",
+        " patterns up to 2024.",
         style = "font-size: large;"
       ),
       h2("What to Explore:"),
@@ -40,7 +40,7 @@ ui <- function(id) {
       ),
       h2("Data and Sources"),
       p(
-        "The content here uses estimates from the EDGAR 2024 report. This effort does not ",
+        "The content here uses estimates from the EDGAR 2025 report. This effort does not ",
         "reflect official representations from the European Commission or its agencies but is ",
         "intended as a user-friendly exploration based on publicly released information.",
         style = "font-size: large;"
@@ -70,7 +70,7 @@ ui <- function(id) {
         style = "font-size: large;"
       ),
       tags$cite(
-        "EDGAR 2024 Global Greenhouse Gas Emissions Data, Emissions Database for Global ",
+        "EDGAR 2025 Global Greenhouse Gas Emissions Data, Emissions Database for Global ",
         "Atmospheric Research (EDGAR), Joint Research Centre (JRC) of the European ",
         "Commission. Data available at: ",
         tags$a(href = "https://edgar.jrc.ec.europa.eu", "https://edgar.jrc.ec.europa.eu"),
