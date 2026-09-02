@@ -46,11 +46,3 @@ jobs:
         with:
           name: coverage-report-html
           path: coverage-report
-
-      - name: Upload per-source coverage report
-        uses: actions/upload-artifact@v4
-        with:
-          name: coverage-by-source
-          path: |
-            coverage-by-source.html
-            coverage-by-source.json
