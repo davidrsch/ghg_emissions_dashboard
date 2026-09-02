@@ -1,5 +1,5 @@
 {
   "dependencies": {
-    "shiny.cov-cypress": "github:davidrsch/shiny.cov-cypress"
+    "shiny.cov-cypress": "git+https://github.com/davidrsch/shiny.cov-cypress.git"
   }
 }
