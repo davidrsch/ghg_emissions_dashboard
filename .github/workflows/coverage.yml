@@ -15,21 +15,19 @@ jobs:
         with:
           use-public-rspm: true
 
-      - name: Restore R dependencies
-        run: |
-          install.packages("renv")
-          renv::restore(prompt = FALSE)
+      - name: Restore app dependencies
+        run: renv::restore(prompt = FALSE)
         shell: Rscript {0}
 
-      - name: Install shiny.cov and coverage tooling
-        run: renv::install(c("davidrsch/shiny.cov-r", "shinytest2", "chromote", "covr"), prompt = FALSE)
+      - name: Install shiny.cov
+        run: renv::install(c("davidrsch/shiny.cov-r", "shinytest2", "chromote"), prompt = FALSE)
         shell: Rscript {0}
 
       - name: Set up Chrome (for shinytest2)
         uses: browser-actions/setup-chrome@v1
         id: chrome
 
-      - name: Run coverage (setup -> AppDriver -> collect -> report)
+      - name: Run coverage
         run: Rscript run_shinycov_shinytest2.R
         env:
           CHROMOTE_CHROME: ${{ steps.chrome.outputs.chrome-path }}
@@ -41,8 +39,8 @@ jobs:
           files: cobertura.xml
           fail_ci_if_error: false
 
-      - name: Upload HTML report (per-line hit counts)
+      - name: Upload coverage report
         uses: actions/upload-artifact@v4
         with:
-          name: coverage-report-html
+          name: coverage-report
           path: coverage-report
