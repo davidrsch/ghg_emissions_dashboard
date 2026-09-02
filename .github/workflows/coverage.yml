@@ -23,14 +23,22 @@ jobs:
         run: renv::install(c("davidrsch/shiny.cov-r", "shinytest2", "chromote"), prompt = FALSE)
         shell: Rscript {0}
 
-      - name: Set up Chrome (for shinytest2)
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install Node dependencies (Cypress)
+        run: npm ci
+
+      - name: Set up Chrome (for shinytest2 + Cypress)
         uses: browser-actions/setup-chrome@v1
         id: chrome
 
-      - name: Run coverage
-        run: Rscript run_shinycov_shinytest2.R
+      - name: Run coverage (cypress + shinytest2)
+        run: Rscript run_shinycov.R
         env:
           CHROMOTE_CHROME: ${{ steps.chrome.outputs.chrome-path }}
+          CHROME_BIN: ${{ steps.chrome.outputs.chrome-path }}
           NOT_CRAN: "true"
 
       - name: Upload coverage to Codecov
