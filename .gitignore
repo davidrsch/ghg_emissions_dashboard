@@ -2,6 +2,7 @@
 /.claude/
 package-lock.json
 node_modules/
+coverage-report/
 coverage-report.html
 cobertura.xml
 .shiny.cov/
