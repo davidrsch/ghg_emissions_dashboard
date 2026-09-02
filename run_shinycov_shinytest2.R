@@ -34,7 +34,7 @@ app$stop()
 
 cat("\n== collect + report ==\n")
 cov <- shiny.cov::collect(app_dir)
-shiny.cov::ui_report(cov, app_dir = app_dir)
+shiny.cov::report(cov, app_dir = app_dir, file = "coverage-report.html", browse = FALSE)
 shiny.cov::to_cobertura(cov, "cobertura.xml")
 
 cat("\n== cleanup ==\n")
