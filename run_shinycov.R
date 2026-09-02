@@ -44,9 +44,13 @@ if (!ready) {
   stop("shiny.cov: Cypress Shiny server did not become ready on 127.0.0.1:3333")
 }
 
-cy_status <- system(
-  "cd tests && npx cypress run --browser chrome --spec cypress/e2e/shinycov-demo.cy.js"
-)
+cy_status <- system(paste(
+  "cd tests && npx cypress run",
+  if (nzchar(Sys.getenv("CHROME_BIN", unset = ""))) {
+    sprintf("--browser %s", shQuote(Sys.getenv("CHROME_BIN")))
+  } else "",
+  "--spec cypress/e2e/shinycov-demo.cy.js"
+))
 if (cy_status != 0) warning("shiny.cov: Cypress run exited with status ", cy_status)
 
 # Graceful stop so the app writes coverage.cypress.rds via its shutdown hooks.
