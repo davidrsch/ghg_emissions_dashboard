@@ -1,0 +1,53 @@
+name: coverage
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  coverage:
+    runs-on: ubuntu-latest
+    env:
+      # PAT with read access to davidrsch/shiny.cov-r (private). Store it as
+      # a repo secret named SHINYCOV_PAT.
+      GITHUB_PAT: ${{ secrets.SHINYCOV_PAT }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: r-lib/actions/setup-r@v2
+        with:
+          use-public-rspm: true
+
+      - name: Restore R dependencies
+        run: |
+          install.packages("renv")
+          renv::restore(prompt = FALSE)
+        shell: Rscript {0}
+
+      - name: Install shiny.cov and coverage tooling
+        run: renv::install(c("davidrsch/shiny.cov-r", "shinytest2", "chromote", "covr"), prompt = FALSE)
+        shell: Rscript {0}
+
+      - name: Set up Chrome (for shinytest2)
+        uses: browser-actions/setup-chrome@v1
+        id: chrome
+
+      - name: Run coverage (setup -> AppDriver -> collect -> report)
+        run: Rscript run_shinycov_shinytest2.R
+        env:
+          CHROMOTE_CHROME: ${{ steps.chrome.outputs.chrome-path }}
+          NOT_CRAN: "true"
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v4
+        with:
+          files: cobertura.xml
+          token: ${{ secrets.CODECOV_TOKEN }}
+          fail_ci_if_error: false
+
+      - name: Upload HTML report artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: coverage-report.html

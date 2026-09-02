@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "shiny.cov-cypress": "github:davidrsch/shiny.cov-cypress"
+  }
+}
