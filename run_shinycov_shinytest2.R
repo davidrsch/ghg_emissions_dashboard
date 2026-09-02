@@ -17,7 +17,10 @@ app$click(selector = "#Pivot0-Tab1")
 Sys.sleep(5)
 
 cat("\n== read all values (logs get_value per input, get_text per output) ==\n")
-vals <- app$get_values()
+# COMMENTED OUT so the demo shows UI coverage correctly: with this disabled,
+# only the single get_text() below is logged, so every other input/output
+# should show up as untested/uncovered.
+# vals <- app$get_values()
 
 cat("\n== verify one output ==\n")
 msg <- app$get_text("#app-keymetrics-tghge")
@@ -31,6 +34,7 @@ app$stop()
 
 cat("\n== collect + report ==\n")
 cov <- shiny.cov::collect(app_dir)
+shiny.cov::ui_report(cov, app_dir = app_dir)
 shiny.cov::to_cobertura(cov, "cobertura.xml")
 
 cat("\n== cleanup ==\n")
