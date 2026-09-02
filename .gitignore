@@ -4,6 +4,8 @@ package-lock.json
 node_modules/
 coverage-report/
 coverage-report.html
+coverage-by-source.html
+coverage-by-source.json
 cobertura.xml
 .shiny.cov/
 *.shinycov_backup
