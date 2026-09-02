@@ -4,7 +4,7 @@ box::use(
   plotly[renderPlotly],
   shiny.fluent[Dropdown.shinyInput, Toggle.shinyInput],
   shiny.fluent[updateDropdown.shinyInput],
-  shiny[div, getDefaultReactiveDomain, isolate, moduleServer, NS],
+  shiny[NS, div, getDefaultReactiveDomain, isolate, moduleServer],
   shiny[observeEvent, reactiveVal, req, tagAppendAttributes],
   stats[na.omit],
   stringr[str_split_fixed],

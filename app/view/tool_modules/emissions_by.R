@@ -1,7 +1,7 @@
 box::use(
   shiny.fluent[Dropdown.shinyInput],
   shiny.fluent[updateDropdown.shinyInput],
-  shiny[div, getDefaultReactiveDomain, moduleServer, NS, observeEvent],
+  shiny[NS, div, getDefaultReactiveDomain, moduleServer, observeEvent],
   stringr[str_split_fixed],
 )
 

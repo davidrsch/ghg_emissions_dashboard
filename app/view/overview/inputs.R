@@ -1,7 +1,7 @@
 box::use(
   dplyr[last],
   shiny.fluent[ComboBox.shinyInput, Text],
-  shiny[div, hr, moduleServer, NS, reactiveVal],
+  shiny[NS, div, hr, moduleServer, reactiveVal],
   stringr[str_split_fixed],
 )
 

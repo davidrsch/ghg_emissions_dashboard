@@ -1,6 +1,6 @@
 box::use(
   shiny.fluent[Stack, Text],
-  shiny[div, moduleServer, NS, renderUI, uiOutput],
+  shiny[NS, div, moduleServer, renderUI, uiOutput],
 )
 
 box::use(

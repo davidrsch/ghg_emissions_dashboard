@@ -1,6 +1,6 @@
 box::use(
   shiny.fluent[IconButton.shinyInput, Text, updateIconButton.shinyInput],
-  shiny[div, getDefaultReactiveDomain, moduleServer, NS, observeEvent],
+  shiny[NS, div, getDefaultReactiveDomain, moduleServer, observeEvent],
   shinyjs[addClass, hide, removeClass, show],
 )
 

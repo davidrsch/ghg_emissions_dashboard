@@ -1,7 +1,7 @@
 box::use(
   dplyr[last],
   shiny.fluent[Dropdown.shinyInput, Stack],
-  shiny[div, moduleServer, NS, observeEvent, reactiveVal],
+  shiny[NS, div, moduleServer, observeEvent, reactiveVal],
 )
 
 box::use(

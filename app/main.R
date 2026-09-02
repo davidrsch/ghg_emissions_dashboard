@@ -1,6 +1,6 @@
 box::use(
-  shiny.fluent[fluentPage, Pivot, PivotItem],
-  shiny[div, moduleServer, NS],
+  shiny.fluent[Pivot, PivotItem, fluentPage],
+  shiny[NS, div, moduleServer],
   shinyjs[useShinyjs],
 )
 

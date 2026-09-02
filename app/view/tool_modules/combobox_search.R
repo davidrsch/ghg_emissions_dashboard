@@ -1,7 +1,7 @@
 box::use(
   purrr[discard],
   shiny.fluent[ComboBox.shinyInput, updateComboBox.shinyInput],
-  shiny[getDefaultReactiveDomain, moduleServer, NS, observeEvent, req],
+  shiny[NS, getDefaultReactiveDomain, moduleServer, observeEvent, req],
   stringr[str_detect, str_replace, str_split_fixed, str_to_lower],
 )
 

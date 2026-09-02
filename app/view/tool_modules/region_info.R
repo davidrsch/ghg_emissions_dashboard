@@ -1,6 +1,6 @@
 box::use(
   plotly[plotlyOutput, renderPlotly],
-  shiny[div, moduleServer, NS, observeEvent, reactiveVal, renderUI],
+  shiny[NS, div, moduleServer, observeEvent, reactiveVal, renderUI],
   shiny[tagAppendAttributes, uiOutput],
   stringr[str_split_fixed],
 )
